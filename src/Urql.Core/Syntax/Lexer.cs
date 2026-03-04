@@ -152,6 +152,14 @@ public sealed class Lexer
                     _index++;
                     AddToken(TokenKind.Question, "?", start, _index);
                     continue;
+                case '.':
+                    _index++;
+                    AddToken(TokenKind.Dot, ".", start, _index);
+                    continue;
+                case '!':
+                    _index++;
+                    AddToken(TokenKind.Exclamation, "!", start, _index);
+                    continue;
                 case '=':
                     if (Peek() == '=')
                     {

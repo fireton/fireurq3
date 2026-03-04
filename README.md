@@ -1,6 +1,6 @@
 # FireURQ3
 
-Headless URQL core runtime prototype on .NET 8 / C# 12.
+Headless URQL core runtime + runner prototypes on .NET 8 / C# 12.
 
 Current implemented pipeline:
 
@@ -30,6 +30,7 @@ Current implemented pipeline:
 
 - `src/Urql.Core` - core library (syntax, IR, runtime)
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
+- `src/Urql.Runner.MonoGame` - desktop MonoGame runner with console-like transcript flow
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
 - scenario harness tests: file-based quest run + scripted button walks + checkpoints
 
@@ -111,6 +112,29 @@ The runner currently prints:
 
 The runner also applies detected quest encoding to `##NN$` interpolation decoding through runtime context.
 
+Run the MonoGame desktop runner with console-like flow:
+
+```bash
+cd /Users/fireton/fieurq3
+dotnet run --project src/Urql.Runner.MonoGame/Urql.Runner.MonoGame.csproj /path/to/script.qst
+```
+
+If no quest path is passed, the runner opens an OS-native file chooser dialog.
+
+MonoGame runner controls:
+
+- `Up` / `Down` - move active choice
+- `Enter` - confirm selected choice
+- Mouse hover + click - select a choice
+- `Esc` - exit
+
+MonoGame runner behavior:
+
+- transcript output is append-only and auto-scrolls to the tail
+- active choices appear inline after transcript text
+- after selection, choices are removed and echoed as `[Caption]` in transcript
+- bundled fonts from `src/Urql.Runner.MonoGame/Assets/Fonts` are used first, then system fonts are fallback
+
 `##NN$` behavior:
 
 - for `cp1251` / `cp866` / `koi8-r`: `NN` is treated as byte `0..255` and decoded via that codepage
@@ -120,6 +144,7 @@ The runner also applies detected quest encoding to `##NN$` interpolation decodin
 
 - Spec: `docs/Spec.md`
 - MVP plan: `docs/fireurq3_mvp_plan.md`
+- MonoGame runner plan: `docs/quest_runner_monogame_plan.md`
 - Source references:
   - `docs/URQL.txt`
   - `docs/FireURQ_Особенности реализации URQL — IFВики.html`

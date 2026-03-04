@@ -133,6 +133,15 @@ internal static class QuestScenarioHarness
                 return byCaption;
             }
 
+            // Keep scenario fixtures resilient when quests use decorative trailing dots in captions.
+            var normalizedPick = NormalizeCaptionForMatch(pick.Caption);
+            byCaption = vm.Buttons.FirstOrDefault(b =>
+                string.Equals(NormalizeCaptionForMatch(b.Caption), normalizedPick, StringComparison.OrdinalIgnoreCase));
+            if (byCaption is not null)
+            {
+                return byCaption;
+            }
+
             throw new Xunit.Sdk.XunitException(
                 $"Button with caption '{pick.Caption}' was not found. Available: {string.Join(", ", vm.Buttons.Select(b => b.Caption))}.");
         }
@@ -179,6 +188,11 @@ internal static class QuestScenarioHarness
             var actualHasErrors = vm.Context.Diagnostics.Items.Any(d => d.Severity == DiagnosticSeverity.Error);
             Assert.Equal(hasErrors, actualHasErrors);
         }
+    }
+
+    private static string NormalizeCaptionForMatch(string caption)
+    {
+        return caption.Trim().TrimEnd('.');
     }
 }
 

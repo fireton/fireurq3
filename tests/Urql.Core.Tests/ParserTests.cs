@@ -99,12 +99,12 @@ public sealed class ParserTests
     [Fact]
     public void Parse_DosMode_ShouldParsePrintRawTail()
     {
-        const string source = "pln Привет, мир!";
+        const string source = "pln Привет, мир. Пока!";
         var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq));
         var line = Assert.Single(parse.Program.Lines);
         var print = Assert.IsType<PrintStatementSyntax>(Assert.Single(line.Statements));
         var raw = Assert.IsType<RawTextExpressionSyntax>(print.TextExpression);
-        Assert.Equal("Привет, мир", raw.RawText);
+        Assert.Equal("Привет, мир. Пока!", raw.RawText);
     }
 
     [Fact]

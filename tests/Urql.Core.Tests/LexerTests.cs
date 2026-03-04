@@ -143,4 +143,15 @@ public sealed class LexerTests
 
         Assert.Contains(result.Diagnostics, d => d.Code == DiagnosticCode.InvalidNumberLiteral);
     }
+
+    [Fact]
+    public void Lex_ShouldKeepSentencePunctuationInRawText()
+    {
+        const string source = "pln Привет. Пока!";
+        var result = Lexer.Lex(source);
+
+        Assert.DoesNotContain(result.Diagnostics, d => d.Code == DiagnosticCode.UnexpectedCharacter);
+        Assert.Contains(result.Tokens, t => t.Kind == TokenKind.Dot && t.Text == ".");
+        Assert.Contains(result.Tokens, t => t.Kind == TokenKind.Exclamation && t.Text == "!");
+    }
 }

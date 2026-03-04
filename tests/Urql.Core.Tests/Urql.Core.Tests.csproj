@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Urql.Core\Urql.Core.csproj" />
+    <ProjectReference Include="..\..\src\Urql.Runner.MonoGame\Urql.Runner.MonoGame.csproj" />
   </ItemGroup>
 
 </Project>

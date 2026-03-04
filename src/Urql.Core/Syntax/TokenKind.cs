@@ -29,6 +29,8 @@ public enum TokenKind
     Hash = 37,             // #
     Dollar = 38,           // $
     Question = 39,         // ?
+    Dot = 40,              // .
+    Exclamation = 41,      // !
 
     KeywordIf = 100,
     KeywordThen = 101,
