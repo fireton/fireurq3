@@ -93,9 +93,13 @@ At least two scenarios per quest:
 - happy path
 - failure/death branch
 
+Status: implemented (`tests/quests/hamster1.walk.json`, `tests/quests/hamster2.walk.json`).
+
 ## Step 8: Acceptance Criteria
 
 - Both quests load and start menu is reachable.
 - Scripted button walks run without VM fault.
 - Expected end-state assertions pass.
 - Remaining diagnostics are non-fatal compatibility warnings.
+
+Status: implemented as automated acceptance tests over scripted walkthroughs (`HamsterQuestScenarioTests`).

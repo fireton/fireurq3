@@ -1,0 +1,117 @@
+{
+  "scenarios": [
+    {
+      "name": "hamster2_happy_opening",
+      "scriptPath": "tests/quests/hamster2.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice",
+        "outputContains": [
+          "Похождения отважного хомяка Семена"
+        ]
+      },
+      "steps": [
+        {
+          "pick": {
+            "caption": "Начать игру"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Осмотреться"
+          },
+          "checkpoint": {
+            "status": "WaitingForChoice",
+            "outputContains": [
+              "Вы сидите на столе"
+            ]
+          }
+        }
+      ],
+      "finalCheckpoint": {
+        "status": "WaitingForChoice"
+      }
+    },
+    {
+      "name": "hamster2_failure_jump",
+      "scriptPath": "tests/quests/hamster2.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice"
+      },
+      "steps": [
+        {
+          "pick": {
+            "caption": "Начать игру"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Осмотреться"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Спрыгнуть со стола"
+          },
+          "checkpoint": {
+            "status": "WaitingForChoice",
+            "outputContains": [
+              "было уже поздно"
+            ]
+          }
+        },
+        {
+          "pick": {
+            "caption": "Сначала"
+          }
+        }
+      ],
+      "finalCheckpoint": {
+        "status": "WaitingForChoice",
+        "outputContains": [
+          "Похождения отважного хомяка Семена"
+        ]
+      }
+    },
+    {
+      "name": "hamster2_win_fanfare_descent",
+      "scriptPath": "tests/quests/hamster2.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice"
+      },
+      "steps": [
+        { "pick": { "caption": "Начать игру" } },
+        { "pick": { "caption": "Осмотреться" } },
+        { "pick": { "caption": "Залезть в клетку" } },
+        { "pick": { "caption": "На стол" } },
+        { "pick": { "caption": "Поискать на столе" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Заглянуть под стол" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Прилепить жевачку к столу" } },
+        { "pick": { "caption": "Прилепить веревку к жевачке" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Заглянуть под стол" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Подойти к вазе" } },
+        { "pick": { "caption": "Сделать из спичек шалаш" } },
+        { "pick": { "caption": "Склеить жевачкой" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Подойти к жевачке" } },
+        { "pick": { "caption": "Прилепить веревку к жевачке" } },
+        { "pick": { "caption": "Спуститься" } }
+      ],
+      "finalCheckpoint": {
+        "status": "Halted",
+        "outputContains": [
+          "под звуки фанфар спускаетесь по ней"
+        ]
+      }
+    }
+  ]
+}

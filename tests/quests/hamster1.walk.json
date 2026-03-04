@@ -1,0 +1,125 @@
+{
+  "scenarios": [
+    {
+      "name": "hamster1_happy_opening",
+      "scriptPath": "tests/quests/hamster1.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice",
+        "outputContains": [
+          "Похождения отважного хомяка Семена"
+        ]
+      },
+      "steps": [
+        {
+          "pick": {
+            "caption": "Начать игру"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Проснуться"
+          },
+          "checkpoint": {
+            "status": "WaitingForChoice",
+            "outputContains": [
+              "Вы сидите в пустом домике"
+            ]
+          }
+        }
+      ],
+      "finalCheckpoint": {
+        "status": "WaitingForChoice"
+      }
+    },
+    {
+      "name": "hamster1_failure_drink_milk",
+      "scriptPath": "tests/quests/hamster1.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice"
+      },
+      "steps": [
+        {
+          "pick": {
+            "caption": "Начать игру"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Проснуться"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Подойти к поилке"
+          }
+        },
+        {
+          "pick": {
+            "caption": "Вылакать молоко"
+          },
+          "checkpoint": {
+            "status": "WaitingForChoice",
+            "outputContains": [
+              "уже слишком поздно"
+            ]
+          }
+        },
+        {
+          "pick": {
+            "caption": "Сначала"
+          }
+        }
+      ],
+      "finalCheckpoint": {
+        "status": "WaitingForChoice",
+        "outputContains": [
+          "Похождения отважного хомяка Семена"
+        ]
+      }
+    },
+    {
+      "name": "hamster1_win_fanfare_escape",
+      "scriptPath": "tests/quests/hamster1.qst",
+      "encodingName": "auto",
+      "maxInstructionsPerRun": 10000,
+      "initialCheckpoint": {
+        "status": "WaitingForChoice"
+      },
+      "steps": [
+        { "pick": { "caption": "Начать игру" } },
+        { "pick": { "caption": "Проснуться" } },
+        { "pick": { "caption": "Залезть в колесо" } },
+        { "pick": { "caption": "В домик" } },
+        { "pick": { "caption": "Подойти к поилке" } },
+        { "pick": { "caption": "Наполнить молоком щеку" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Прыснуть молоком в кота" } },
+        { "pick": { "caption": "В домик" } },
+        { "pick": { "caption": "Залезть в колесо" } },
+        { "pick": { "caption": "Крутить колесо" } },
+        { "pick": { "caption": "Подобрать бумажку" } },
+        { "pick": { "caption": "В домик" } },
+        { "pick": { "caption": "Подойти к крышке" } },
+        { "pick": { "caption": "Съесть корм" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Завернуть гвоздь в бумажку" } },
+        { "pick": { "caption": "Назад" } },
+        { "pick": { "caption": "Взять гвоздь в бумажке" } },
+        { "pick": { "caption": "В домик" } },
+        { "pick": { "caption": "Сбежать" } },
+        { "pick": { "caption": "Использовать гвоздь как рычаг" } }
+      ],
+      "finalCheckpoint": {
+        "status": "Halted",
+        "outputContains": [
+          "под барабанную дробь и звуки фанфар выбираетесь из клетки"
+        ]
+      }
+    }
+  ]
+}

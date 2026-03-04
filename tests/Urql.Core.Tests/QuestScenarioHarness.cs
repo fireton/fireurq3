@@ -3,6 +3,8 @@ using Urql.Core.IO;
 using Urql.Core.Intermediate;
 using Urql.Core.Runtime;
 using Urql.Core.Syntax;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Urql.Core.Tests;
 
@@ -28,7 +30,8 @@ internal sealed record QuestScenario(
     int MaxInstructionsPerRun = 10_000,
     QuestCheckpoint? InitialCheckpoint = null,
     IReadOnlyList<QuestScenarioStep>? Steps = null,
-    QuestCheckpoint? FinalCheckpoint = null);
+    QuestCheckpoint? FinalCheckpoint = null,
+    string? Name = null);
 
 internal sealed record QuestScenarioResult(
     VirtualMachine Vm,
@@ -37,6 +40,12 @@ internal sealed record QuestScenarioResult(
 
 internal static class QuestScenarioHarness
 {
+    private static readonly JsonSerializerOptions JsonOptions = new()
+    {
+        PropertyNameCaseInsensitive = true,
+        Converters = { new JsonStringEnumConverter() }
+    };
+
     public static QuestScenarioResult Run(QuestScenario scenario)
     {
         var load = UrqlTextLoader.LoadFile(scenario.ScriptPath, new UrqlTextLoadOptions(scenario.EncodingName));
@@ -73,6 +82,33 @@ internal static class QuestScenarioHarness
 
         AssertCheckpoint(vm, scenario.FinalCheckpoint);
         return new QuestScenarioResult(vm, load.EncodingName, picked);
+    }
+
+    public static IReadOnlyList<QuestScenario> LoadScenariosFromJson(string jsonPath)
+    {
+        var json = File.ReadAllText(jsonPath);
+        var root = JsonSerializer.Deserialize<QuestScenarioFileDto>(json, JsonOptions)
+                   ?? throw new InvalidOperationException($"Failed to parse scenario file: {jsonPath}");
+
+        var scenarios = new List<QuestScenario>();
+        foreach (var dto in root.Scenarios ?? [])
+        {
+            if (string.IsNullOrWhiteSpace(dto.ScriptPath))
+            {
+                throw new InvalidOperationException($"Scenario '{dto.Name}' has empty scriptPath.");
+            }
+
+            scenarios.Add(new QuestScenario(
+                ScriptPath: TestPaths.ResolveFromRepo(dto.ScriptPath),
+                EncodingName: string.IsNullOrWhiteSpace(dto.EncodingName) ? "auto" : dto.EncodingName!,
+                MaxInstructionsPerRun: dto.MaxInstructionsPerRun <= 0 ? 10_000 : dto.MaxInstructionsPerRun,
+                InitialCheckpoint: dto.InitialCheckpoint?.ToCheckpoint(),
+                Steps: dto.Steps?.Select(s => s.ToStep()).ToList() ?? [],
+                FinalCheckpoint: dto.FinalCheckpoint?.ToCheckpoint(),
+                Name: dto.Name));
+        }
+
+        return scenarios;
     }
 
     private static ButtonAction ResolveButton(VirtualMachine vm, ButtonPick pick)
@@ -146,3 +182,60 @@ internal static class QuestScenarioHarness
     }
 }
 
+internal sealed class QuestScenarioFileDto
+{
+    public List<QuestScenarioDto>? Scenarios { get; set; }
+}
+
+internal sealed class QuestScenarioDto
+{
+    public string? Name { get; set; }
+    public string? ScriptPath { get; set; }
+    public string? EncodingName { get; set; }
+    public int MaxInstructionsPerRun { get; set; } = 10_000;
+    public QuestCheckpointDto? InitialCheckpoint { get; set; }
+    public List<QuestScenarioStepDto>? Steps { get; set; }
+    public QuestCheckpointDto? FinalCheckpoint { get; set; }
+}
+
+internal sealed class QuestScenarioStepDto
+{
+    public ButtonPickDto? Pick { get; set; }
+    public QuestCheckpointDto? Checkpoint { get; set; }
+
+    public QuestScenarioStep ToStep()
+    {
+        return new QuestScenarioStep(
+            Pick: Pick?.ToPick() ?? throw new InvalidOperationException("Scenario step is missing 'pick'."),
+            Checkpoint: Checkpoint?.ToCheckpoint());
+    }
+}
+
+internal sealed class ButtonPickDto
+{
+    public string? Caption { get; set; }
+    public int? Index { get; set; }
+
+    public ButtonPick ToPick() => new(Caption, Index);
+}
+
+internal sealed class QuestCheckpointDto
+{
+    public VmStatus? Status { get; set; }
+    public Dictionary<string, double>? NumberVariables { get; set; }
+    public Dictionary<string, string>? StringVariables { get; set; }
+    public Dictionary<string, double>? Inventory { get; set; }
+    public List<string>? OutputContains { get; set; }
+    public bool? HasErrorDiagnostics { get; set; }
+
+    public QuestCheckpoint ToCheckpoint()
+    {
+        return new QuestCheckpoint(
+            Status,
+            NumberVariables,
+            StringVariables,
+            Inventory,
+            OutputContains,
+            HasErrorDiagnostics);
+    }
+}

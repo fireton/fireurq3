@@ -21,6 +21,10 @@ Current implemented pipeline:
 - Step 5: permissive diagnostics policy for unsupported commands - done
 - Strict diagnostics mode for unsupported commands - done
 - Step 6: scenario harness for quest walkthroughs - done
+- Step 7: real hamster walkthrough scenarios - done
+- Step 8: acceptance checks for scripted quest runs - done
+  - includes hamster1 winning ending scenario (fanfare escape)
+  - includes hamster2 winning ending scenario (fanfare descent)
 
 ## Projects
 
