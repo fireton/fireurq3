@@ -219,6 +219,7 @@ public sealed class Parser
             TokenKind.Identifier when IsWord(Current, "inv") && Peek(1).Kind == TokenKind.Plus => ParseInvDeltaStatement(true),
             TokenKind.Identifier when IsWord(Current, "inv") && Peek(1).Kind == TokenKind.Minus => ParseInvDeltaStatement(false),
             TokenKind.Identifier when Peek(1).Kind == TokenKind.Equals => ParseAssignmentStatement(),
+            TokenKind.Percent => ParsePercentMacroAsUnknown(),
             _ => ParseUnknownOrInvalid(start)
         };
     }
@@ -391,9 +392,10 @@ public sealed class Parser
 
     private StatementSyntax ParseUnknownOrInvalid(SourcePosition start)
     {
-        if (_options.AllowUnknownCommands && IsCommandLike(Current.Kind))
+        if (IsCommandLike(Current.Kind))
         {
-            return ParseUnknownCommandStatement();
+            var severity = _options.AllowUnknownCommands ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error;
+            return ParseUnknownCommandStatement(severity);
         }
 
         return ParseInvalidStatement(start);
@@ -412,13 +414,13 @@ public sealed class Parser
             new SourceSpan(start, token.Span.End));
     }
 
-    private StatementSyntax ParseUnknownCommandStatement()
+    private StatementSyntax ParseUnknownCommandStatement(DiagnosticSeverity severity)
     {
         var command = NextToken();
         var args = ParseRawTextExpression();
         _diagnostics.Report(
             ParseDiagnosticCode.UnknownCommand,
-            DiagnosticSeverity.Warning,
+            severity,
             $"Unknown command '{command.Text}' treated as no-op in compatibility mode.",
             command.Span);
 
@@ -426,6 +428,32 @@ public sealed class Parser
             command.Text,
             args,
             new SourceSpan(command.Span.Start, args.Span.End));
+    }
+
+    private StatementSyntax ParsePercentMacroAsUnknown()
+    {
+        var percent = NextToken();
+        var commandName = percent.Text;
+        SourcePosition commandEnd = percent.Span.End;
+        if (Current.Kind == TokenKind.Identifier)
+        {
+            var name = NextToken();
+            commandName += name.Text;
+            commandEnd = name.Span.End;
+        }
+
+        var args = ParseRawTextExpression();
+        var severity = _options.AllowUnknownCommands ? DiagnosticSeverity.Warning : DiagnosticSeverity.Error;
+        _diagnostics.Report(
+            ParseDiagnosticCode.UnknownCommand,
+            severity,
+            $"Unknown command '{commandName}' treated as no-op in compatibility mode.",
+            new SourceSpan(percent.Span.Start, commandEnd));
+
+        return new UnknownCommandStatementSyntax(
+            commandName,
+            args,
+            new SourceSpan(percent.Span.Start, args.Span.End));
     }
 
     private Token Expect(TokenKind kind, string message)

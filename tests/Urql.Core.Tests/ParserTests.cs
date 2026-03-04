@@ -154,4 +154,39 @@ public sealed class ParserTests
         Assert.Equal("use_Топор_Рубить дерево", parse.Program.Lines[0].Label?.Name);
         Assert.IsType<EndStatementSyntax>(Assert.Single(parse.Program.Lines[1].Statements));
     }
+
+    [Fact]
+    public void Parse_ShouldTreatPercentMacroAsUnknownNoOpWarning()
+    {
+        const string source = "%include inc\\more.qst";
+        var parse = Parser.Parse(source);
+
+        var line = Assert.Single(parse.Program.Lines);
+        var stmt = Assert.IsType<UnknownCommandStatementSyntax>(Assert.Single(line.Statements));
+        Assert.Equal("%include", stmt.CommandName, ignoreCase: true);
+        Assert.Contains(parse.Diagnostics, d => d.Code == ParseDiagnosticCode.UnknownCommand && d.Severity == DiagnosticSeverity.Warning);
+        Assert.DoesNotContain(parse.Diagnostics, d => d.Code == ParseDiagnosticCode.InvalidStatement && d.Severity == DiagnosticSeverity.Error);
+    }
+
+    [Fact]
+    public void Parse_StrictMode_ShouldReportUnknownCommandAsError()
+    {
+        const string source = "pause 1000";
+        var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq, AllowUnknownCommands: false));
+
+        var line = Assert.Single(parse.Program.Lines);
+        Assert.IsType<UnknownCommandStatementSyntax>(Assert.Single(line.Statements));
+        Assert.Contains(parse.Diagnostics, d => d.Code == ParseDiagnosticCode.UnknownCommand && d.Severity == DiagnosticSeverity.Error);
+    }
+
+    [Fact]
+    public void Parse_StrictMode_ShouldReportPercentMacroAsError()
+    {
+        const string source = "%include inc\\more.qst";
+        var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq, AllowUnknownCommands: false));
+
+        var line = Assert.Single(parse.Program.Lines);
+        Assert.IsType<UnknownCommandStatementSyntax>(Assert.Single(line.Statements));
+        Assert.Contains(parse.Diagnostics, d => d.Code == ParseDiagnosticCode.UnknownCommand && d.Severity == DiagnosticSeverity.Error);
+    }
 }

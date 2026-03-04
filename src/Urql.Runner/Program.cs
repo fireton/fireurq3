@@ -12,6 +12,7 @@ if (args.Length == 0)
 }
 
 var path = args[0];
+var strictMode = args.Skip(1).Any(a => string.Equals(a, "--strict", StringComparison.OrdinalIgnoreCase));
 if (!File.Exists(path))
 {
     Console.WriteLine($"Input file not found: {path}");
@@ -23,7 +24,7 @@ Console.WriteLine($"Detected encoding: {load.EncodingName} (confidence {load.Con
 var source = load.Text;
 var lex = Lexer.Lex(source);
 Console.WriteLine($"Lexed tokens: {lex.Tokens.Count}, diagnostics: {lex.Diagnostics.Count}");
-var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq));
+var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq, AllowUnknownCommands: !strictMode));
 Console.WriteLine($"Parsed lines: {parse.Program.Lines.Count}, diagnostics: {parse.Diagnostics.Count}");
 var ir = Compiler.Compile(parse.Program, parse.Diagnostics);
 var context = new EvalContext
@@ -33,3 +34,4 @@ var context = new EvalContext
 var vm = new VirtualMachine(ir, context);
 var run = vm.RunUntilWaitOrHalt(10_000);
 Console.WriteLine($"VM status: {run.Status}, executed: {run.ExecutedInstructions}, output-len: {vm.OutputText.Length}, buttons: {vm.Buttons.Count}");
+Console.WriteLine($"Mode: {(strictMode ? "strict" : "permissive")}");

@@ -408,6 +408,13 @@ Parser recovery:
 - On statement parse failure, synchronize to next line.
 - Continue collecting diagnostics.
 
+Unsupported command policy:
+
+- Parser option `AllowUnknownCommands` controls diagnostic severity for unsupported commands.
+- `AllowUnknownCommands=true` (default/permissive): `UnknownCommand` warning + no-op statement.
+- `AllowUnknownCommands=false` (strict): `UnknownCommand` error + no-op statement.
+- `%...` macro-style lines (e.g. `%include ...`) follow the same policy and are currently treated as unsupported commands in core runtime.
+
 ## 13. IR Model (Abstract)
 
 Instruction categories:
@@ -447,7 +454,9 @@ FireURQ-aligned (expression behavior only):
 ## 15. Assumptions (explicit defaults for missing/ambiguous parts)
 
 1. Strings use double quotes with C-like escapes in new core.
-2. Unicode is supported internally; legacy codepage behavior is not emulated now.
+2. Unicode is supported internally; `##NN$` maps by quest encoding:
+   - UTF sources: `NN` is Unicode code point.
+   - `cp1251/cp866/koi8-r` sources: `NN` is byte value decoded through that codepage.
 3. Number->string coercion is empty string for compatibility, except explicit numeric formatting in `#<expr>$`.
 4. Interpolation expansion capped at 16 passes to prevent infinite expansion.
 5. `goto/proc` to unknown label is warning + no-op.

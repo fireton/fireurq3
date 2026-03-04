@@ -1,6 +1,7 @@
 using Urql.Core.Intermediate;
 using Urql.Core.Runtime;
 using Urql.Core.Syntax;
+using Urql.Core.Diagnostics;
 
 namespace Urql.Core.Tests;
 
@@ -418,6 +419,28 @@ public sealed class ExecutionTests
 
         Assert.Equal(VmStatus.Halted, run.Status);
         Assert.Equal("Ж\n", vm.OutputText);
+    }
+
+    [Fact]
+    public void Vm_ShouldContinueAcrossUnsupportedCommandsAsNoOps()
+    {
+        const string source = """
+                              :start
+                              %include inc\extra.qst
+                              pause 1000
+                              anykey k
+                              instr ok="yes"
+                              end
+                              """;
+
+        var vm = BuildVm(source);
+        var run = vm.RunUntilHalt(500);
+
+        Assert.Equal(VmStatus.Halted, run.Status);
+        Assert.True(vm.Context.Variables.TryGet("ok", out var ok));
+        Assert.Equal("yes", ok.StringValue);
+        Assert.Contains(vm.Context.Diagnostics.Items, d => d.Code == ParseDiagnosticCode.UnknownCommand && d.Severity == DiagnosticSeverity.Warning);
+        Assert.DoesNotContain(vm.Context.Diagnostics.Items, d => d.Code == ParseDiagnosticCode.InvalidStatement && d.Severity == DiagnosticSeverity.Error);
     }
 
     private static VirtualMachine BuildVm(string source)

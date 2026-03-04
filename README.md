@@ -18,6 +18,8 @@ Current implemented pipeline:
 - Step 2: inventory command set (`perkill`, `invkill`, `inv+`, `inv-`, `inv_...`) - done
 - Step 3: inventory semantics + `use_...` label invocation/return flow - done
 - Step 4: special interpolation forms (`#$`, `#/$`, `##NN$`) - done
+- Step 5: permissive diagnostics policy for unsupported commands - done
+- Strict diagnostics mode for unsupported commands - done
 
 ## Projects
 
@@ -49,6 +51,7 @@ Implemented runtime bridges/behavior:
 - `inv_<item>` read/write bridge
 - bare inventory item checks in expressions/conditions (e.g. `if not Веревка then ...`)
 - `use_...` label invocation API with proc-like return
+- unsupported commands are parsed as warning + no-op (including `%include`-style macro lines)
 
 Not implemented yet:
 
@@ -85,6 +88,13 @@ Run parser/compiler/vm smoke on a script file:
 ```bash
 cd /Users/fireton/fieurq3
 dotnet run --project src/Urql.Runner/Urql.Runner.csproj /path/to/script.qst
+```
+
+Strict diagnostics mode (unsupported commands are errors):
+
+```bash
+cd /Users/fireton/fieurq3
+dotnet run --project src/Urql.Runner/Urql.Runner.csproj /path/to/script.qst --strict
 ```
 
 The runner currently prints:
