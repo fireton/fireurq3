@@ -353,6 +353,73 @@ public sealed class ExecutionTests
         Assert.Equal("1", saved.StringValue);
     }
 
+    [Fact]
+    public void Vm_ShouldExpandLegacyInterpolationInPrintAndButtons()
+    {
+        const string source = """
+                              :start
+                              instr nextLoc="next"
+                              pln Hello#$world#/$##33$
+                              btn #%nextLoc$,Go#$##33$
+                              end
+                              :next
+                              end
+                              """;
+
+        var vm = BuildVm(source);
+        var run = vm.RunUntilWaitOrHalt(500);
+
+        Assert.Equal(VmStatus.WaitingForChoice, run.Status);
+        Assert.Equal("Hello world\n!\n", vm.OutputText);
+        Assert.Single(vm.Buttons);
+        Assert.Equal("next", vm.Buttons[0].Target, ignoreCase: true);
+        Assert.Equal("Go !", vm.Buttons[0].Caption);
+    }
+
+    [Fact]
+    public void Vm_ShouldUseConfiguredCharCodeEncodingForInterpolation()
+    {
+        const string source = """
+                              :start
+                              pln ##192$
+                              end
+                              """;
+
+        var parse = Parser.Parse(source);
+        var ir = Compiler.Compile(parse.Program, parse.Diagnostics);
+        var context = new EvalContext
+        {
+            CharCodeEncodingName = "cp866"
+        };
+        var vm = new VirtualMachine(ir, context);
+        var run = vm.RunUntilHalt(500);
+
+        Assert.Equal(VmStatus.Halted, run.Status);
+        Assert.Equal("└\n", vm.OutputText);
+    }
+
+    [Fact]
+    public void Vm_ShouldUseUnicodeCodePointForUtf8CharCodeInterpolation()
+    {
+        const string source = """
+                              :start
+                              pln ##1046$
+                              end
+                              """;
+
+        var parse = Parser.Parse(source);
+        var ir = Compiler.Compile(parse.Program, parse.Diagnostics);
+        var context = new EvalContext
+        {
+            CharCodeEncodingName = "utf-8"
+        };
+        var vm = new VirtualMachine(ir, context);
+        var run = vm.RunUntilHalt(500);
+
+        Assert.Equal(VmStatus.Halted, run.Status);
+        Assert.Equal("Ж\n", vm.OutputText);
+    }
+
     private static VirtualMachine BuildVm(string source)
     {
         var parse = Parser.Parse(source);

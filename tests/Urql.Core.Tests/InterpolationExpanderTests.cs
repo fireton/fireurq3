@@ -92,4 +92,80 @@ public sealed class InterpolationExpanderTests
         Assert.Equal("x=", result);
         Assert.Contains(ctx.Diagnostics.Items, d => d.Message.Contains("Failed to parse interpolation expression"));
     }
+
+    [Fact]
+    public void ExpandInterpolations_ShouldSupportLegacySpaceShortcut()
+    {
+        var ctx = new EvalContext();
+        var result = InterpolationExpander.ExpandInterpolations("a#$b", ctx);
+        Assert.Equal("a b", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_ShouldSupportLegacyNewlineShortcut()
+    {
+        var ctx = new EvalContext();
+        var result = InterpolationExpander.ExpandInterpolations("a#/$b", ctx);
+        Assert.Equal("a\nb", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_ShouldSupportLegacyCharCodeShortcut()
+    {
+        var ctx = new EvalContext();
+        var result = InterpolationExpander.ExpandInterpolations("x=##65$!", ctx);
+        Assert.Equal("x=A!", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_CharCode_ShouldUseCp1251WhenConfigured()
+    {
+        var ctx = new EvalContext
+        {
+            CharCodeEncodingName = "cp1251"
+        };
+
+        var result = InterpolationExpander.ExpandInterpolations("x=##192$", ctx);
+
+        Assert.Equal("x=А", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_CharCode_ShouldUseCp866WhenConfigured()
+    {
+        var ctx = new EvalContext
+        {
+            CharCodeEncodingName = "cp866"
+        };
+
+        var result = InterpolationExpander.ExpandInterpolations("x=##192$", ctx);
+
+        Assert.Equal("x=└", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_CharCode_ShouldUseKoi8RWhenConfigured()
+    {
+        var ctx = new EvalContext
+        {
+            CharCodeEncodingName = "koi8-r"
+        };
+
+        var result = InterpolationExpander.ExpandInterpolations("x=##225$", ctx);
+
+        Assert.Equal("x=А", result);
+    }
+
+    [Fact]
+    public void ExpandInterpolations_CharCode_ShouldUseUnicodeCodePointForUtf8()
+    {
+        var ctx = new EvalContext
+        {
+            CharCodeEncodingName = "utf-8"
+        };
+
+        var result = InterpolationExpander.ExpandInterpolations("x=##1046$", ctx);
+
+        Assert.Equal("x=Ж", result);
+    }
 }

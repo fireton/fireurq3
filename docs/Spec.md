@@ -259,6 +259,10 @@ Compilation rule:
 - Interpolation expression result is converted to string by URQL conversion rules.
 - Numeric formatting uses invariant culture.
 - Default numeric format: `G17` (assumption).
+- `##NN$` char-code interpolation:
+  - `NN` is treated as byte value `0..255`.
+  - Byte is decoded using runtime context `CharCodeEncodingName` (typically derived from loaded quest file encoding).
+  - This preserves DOS/FireURQ behavior for non-ASCII ranges while runtime stays Unicode internally.
 
 ## 9. Commands Semantics (MVP)
 

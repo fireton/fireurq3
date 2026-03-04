@@ -730,11 +730,11 @@ public sealed class Parser
 
     private static bool NoSpaceBefore(string token)
     {
-        return token is "," or "." or ":" or ";" or ")" or "]" or "?" or "!" or "$";
+        return token is "," or "." or ":" or ";" or ")" or "]" or "?" or "!" or "$" or "#";
     }
 
     private static bool NoSpaceAfter(string token)
     {
-        return token is "(" or "[" or "#" or "%";
+        return token is "(" or "[" or "#" or "%" or "$";
     }
 }

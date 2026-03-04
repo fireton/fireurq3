@@ -12,6 +12,13 @@ Current implemented pipeline:
 - Dynamic single-statement execution mode
 - xUnit test suite
 
+## Milestone Progress
+
+- Step 1: DOS-style parser behavior (raw line tails, unknown-command no-op warnings) - done
+- Step 2: inventory command set (`perkill`, `invkill`, `inv+`, `inv-`, `inv_...`) - done
+- Step 3: inventory semantics + `use_...` label invocation/return flow - done
+- Step 4: special interpolation forms (`#$`, `#/$`, `##NN$`) - done
+
 ## Projects
 
 - `src/Urql.Core` - core library (syntax, IR, runtime)
@@ -32,10 +39,19 @@ Implemented commands:
 - `p` / `print`
 - `pln` / `println`
 - `btn`
+- `perkill`
+- `invkill` (all or item)
+- `inv+ [count,] item`
+- `inv- [count,] item`
+
+Implemented runtime bridges/behavior:
+
+- `inv_<item>` read/write bridge
+- bare inventory item checks in expressions/conditions (e.g. `if not Веревка then ...`)
+- `use_...` label invocation API with proc-like return
 
 Not implemented yet:
 
-- inventory commands
 - save/load
 - pause/anykey/input
 - decorators/scene rendering
@@ -76,6 +92,13 @@ The runner currently prints:
 - token count + lexer diagnostics count
 - parsed line count + parser diagnostics count
 - VM status summary
+
+The runner also applies detected quest encoding to `##NN$` interpolation decoding through runtime context.
+
+`##NN$` behavior:
+
+- for `cp1251` / `cp866` / `koi8-r`: `NN` is treated as byte `0..255` and decoded via that codepage
+- for UTF sources (`utf-8`, `utf-16*`): `NN` is treated as Unicode code point
 
 ## Documentation
 

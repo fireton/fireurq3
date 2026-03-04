@@ -26,6 +26,10 @@ Console.WriteLine($"Lexed tokens: {lex.Tokens.Count}, diagnostics: {lex.Diagnost
 var parse = Parser.Parse(source, new ParserOptions(CompatibilityMode.DosUrq));
 Console.WriteLine($"Parsed lines: {parse.Program.Lines.Count}, diagnostics: {parse.Diagnostics.Count}");
 var ir = Compiler.Compile(parse.Program, parse.Diagnostics);
-var vm = new VirtualMachine(ir);
+var context = new EvalContext
+{
+    CharCodeEncodingName = load.EncodingName
+};
+var vm = new VirtualMachine(ir, context);
 var run = vm.RunUntilWaitOrHalt(10_000);
 Console.WriteLine($"VM status: {run.Status}, executed: {run.ExecutedInstructions}, output-len: {vm.OutputText.Length}, buttons: {vm.Buttons.Count}");

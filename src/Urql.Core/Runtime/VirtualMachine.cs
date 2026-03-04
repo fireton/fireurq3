@@ -335,7 +335,9 @@ public sealed class VirtualMachine
     private void ExecutePrint(PrintInstruction print)
     {
         var value = ExpressionEvaluator.Evaluate(print.TextExpression, Context);
-        AppendOutput(Context.ToUrqlString(value), print.AppendNewline);
+        var text = Context.ToUrqlString(value);
+        var expanded = InterpolationExpander.ExpandInterpolations(text, Context);
+        AppendOutput(expanded, print.AppendNewline);
     }
 
     private void ExecuteAddButton(AddButtonInstruction btn)
@@ -438,33 +440,41 @@ public sealed class VirtualMachine
 
     private string ResolveTarget(ExpressionSyntax expression)
     {
+        string value;
         if (expression is IdentifierExpressionSyntax id)
         {
-            return id.Name;
+            value = id.Name;
+            return InterpolationExpander.ExpandInterpolations(value, Context);
         }
 
         if (expression is StringLiteralExpressionSyntax str)
         {
-            return str.Value;
+            value = str.Value;
+            return InterpolationExpander.ExpandInterpolations(value, Context);
         }
 
-        var value = ExpressionEvaluator.Evaluate(expression, Context);
-        return Context.ToInterpolationString(value);
+        var evaluated = ExpressionEvaluator.Evaluate(expression, Context);
+        value = Context.ToInterpolationString(evaluated);
+        return InterpolationExpander.ExpandInterpolations(value, Context);
     }
 
     private string ResolveCaption(ExpressionSyntax expression)
     {
+        string value;
         if (expression is StringLiteralExpressionSyntax str)
         {
-            return str.Value;
+            value = str.Value;
+            return InterpolationExpander.ExpandInterpolations(value, Context);
         }
 
         if (expression is IdentifierExpressionSyntax id)
         {
-            return id.Name;
+            value = id.Name;
+            return InterpolationExpander.ExpandInterpolations(value, Context);
         }
 
-        return Context.ToInterpolationString(ExpressionEvaluator.Evaluate(expression, Context));
+        value = Context.ToInterpolationString(ExpressionEvaluator.Evaluate(expression, Context));
+        return InterpolationExpander.ExpandInterpolations(value, Context);
     }
 
     internal void DynamicExecuteGoto(ExpressionSyntax expression, Syntax.SourceSpan span)

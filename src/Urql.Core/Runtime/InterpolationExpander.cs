@@ -10,6 +10,7 @@ public static class InterpolationExpander
     public static string ExpandInterpolations(string input, EvalContext ctx)
     {
         var current = input ?? string.Empty;
+        current = ExpandSpecialInterpolationForms(current, ctx);
 
         for (var pass = 0; pass < 16; pass++)
         {
@@ -20,6 +21,7 @@ public static class InterpolationExpander
             }
 
             var next = RenderTemplate(template, ctx);
+            next = ExpandSpecialInterpolationForms(next, ctx);
             if (next == current)
             {
                 return next;
@@ -51,7 +53,7 @@ public static class InterpolationExpander
                 case EmbeddedExpressionPart embedded:
                 {
                     var expressionText = RenderTemplate(embedded.Content, ctx);
-                    if (TryRenderLegacyStringInterpolation(expressionText, ctx, out var stringValue))
+                    if (TryRenderPercentStringInterpolation(expressionText, ctx, out var stringValue))
                     {
                         output.Append(stringValue);
                         break;
@@ -78,7 +80,7 @@ public static class InterpolationExpander
         return output.ToString();
     }
 
-    private static bool TryRenderLegacyStringInterpolation(string expressionText, EvalContext ctx, out string value)
+    private static bool TryRenderPercentStringInterpolation(string expressionText, EvalContext ctx, out string value)
     {
         value = string.Empty;
         if (string.IsNullOrWhiteSpace(expressionText))
@@ -140,5 +142,115 @@ public static class InterpolationExpander
         };
 
         return numeric.ToString("G17", System.Globalization.CultureInfo.InvariantCulture);
+    }
+
+    private static string ExpandSpecialInterpolationForms(string input, EvalContext ctx)
+    {
+        if (string.IsNullOrEmpty(input))
+        {
+            return string.Empty;
+        }
+
+        var output = new StringBuilder(input.Length);
+        for (var i = 0; i < input.Length;)
+        {
+            if (input[i] != '#')
+            {
+                output.Append(input[i]);
+                i++;
+                continue;
+            }
+
+            var j = i + 1;
+            while (j < input.Length && (input[j] == ' ' || input[j] == '\t'))
+            {
+                j++;
+            }
+
+            if (j < input.Length && input[j] == '$')
+            {
+                output.Append(' ');
+                i = j + 1;
+                continue;
+            }
+
+            if (j < input.Length && input[j] == '/')
+            {
+                j++;
+                while (j < input.Length && (input[j] == ' ' || input[j] == '\t'))
+                {
+                    j++;
+                }
+
+                if (j < input.Length && input[j] == '$')
+                {
+                    output.Append('\n');
+                    i = j + 1;
+                    continue;
+                }
+            }
+
+            if (j < input.Length && input[j] == '#')
+            {
+                j++;
+                while (j < input.Length && (input[j] == ' ' || input[j] == '\t'))
+                {
+                    j++;
+                }
+
+                var digitsStart = j;
+                while (j < input.Length && char.IsDigit(input[j]))
+                {
+                    j++;
+                }
+
+                if (j > digitsStart)
+                {
+                    var digitsEnd = j;
+                    while (j < input.Length && (input[j] == ' ' || input[j] == '\t'))
+                    {
+                        j++;
+                    }
+
+                    if (j < input.Length && input[j] == '$')
+                    {
+                        var codeText = input[digitsStart..digitsEnd];
+                        if (int.TryParse(codeText, out var code))
+                        {
+                            var decoded = ctx.DecodeByteChar(code);
+                            if (decoded.Length > 0 || code == 0)
+                            {
+                                output.Append(decoded);
+                            }
+                            else
+                            {
+                                var range = ctx.UsesUnicodeCharCodes() ? "[0..1114111]" : "[0..255]";
+                                ctx.Diagnostics.Report(
+                                    DiagnosticCode.InvalidNumberLiteral,
+                                    DiagnosticSeverity.Warning,
+                                    $"Character code '{code}' is out of supported range {range} in interpolation.",
+                                    new SourceSpan(new SourcePosition(1, 1), new SourcePosition(1, 1)));
+                            }
+                        }
+                        else
+                        {
+                            ctx.Diagnostics.Report(
+                                DiagnosticCode.InvalidNumberLiteral,
+                                DiagnosticSeverity.Warning,
+                                $"Invalid character code '{codeText}' in interpolation.",
+                                new SourceSpan(new SourcePosition(1, 1), new SourcePosition(1, 1)));
+                        }
+
+                        i = j + 1;
+                        continue;
+                    }
+                }
+            }
+
+            output.Append(input[i]);
+            i++;
+        }
+
+        return output.ToString();
     }
 }
