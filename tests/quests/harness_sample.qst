@@ -1,0 +1,22 @@
+:start
+pln Start
+btn left,Left
+btn right,Right
+end
+
+:left
+instr route="left"
+inv+ key
+pln Took left
+btn end,Finish
+end
+
+:right
+instr route="right"
+pln Took right
+btn end,Finish
+end
+
+:end
+pln Done
+end

@@ -79,6 +79,8 @@ Assertions include:
 - output fragments
 - diagnostics class (fatal vs warning)
 
+Status: implemented (harness + sample scenario tests).
+
 ## Step 7: Add Real Scenarios
 
 Create:

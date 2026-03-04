@@ -20,12 +20,14 @@ Current implemented pipeline:
 - Step 4: special interpolation forms (`#$`, `#/$`, `##NN$`) - done
 - Step 5: permissive diagnostics policy for unsupported commands - done
 - Strict diagnostics mode for unsupported commands - done
+- Step 6: scenario harness for quest walkthroughs - done
 
 ## Projects
 
 - `src/Urql.Core` - core library (syntax, IR, runtime)
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
+- scenario harness tests: file-based quest run + scripted button walks + checkpoints
 
 ## Scope (current)
 
