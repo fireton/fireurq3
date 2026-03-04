@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html class="client-nojs" lang="ru" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<title>FireURQ:Особенности реализации URQL — IFВики</title>
+<script type="text/javascript" nonce="8896cec0b125440194a070ed173" src="//local.adguard.org?ts=1772551497453&amp;type=content-script&amp;dmn=ifwiki.ru&amp;url=https%3A%2F%2Fifwiki.ru%2FFireURQ%3A%25D0%259E%25D1%2581%25D0%25BE%25D0%25B1%25D0%25B5%25D0%25BD%25D0%25BD%25D0%25BE%25D1%2581%25D1%2582%25D0%25B8_%25D1%2580%25D0%25B5%25D0%25B0%25D0%25BB%25D0%25B8%25D0%25B7%25D0%25B0%25D1%2586%25D0%25B8%25D0%25B8_URQL&amp;app=com.google.Chrome&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="8896cec0b125440194a070ed173" src="//local.adguard.org?ts=1772551497453&amp;name=AdGuard%20Extra&amp;type=user-script"></script><script>(function(){var className="client-js";var cookie=document.cookie.match(/(?:^|; )ifwikimwclientpreferences=([^;]+)/);if(cookie){cookie[1].split('%2C').forEach(function(pref){className=className.replace(new RegExp('(^| )'+pref.replace(/-clientpref-\w+$|[^\w-]+/g,'')+'-clientpref-\\w+( |$)'),'$1'+pref+'$2');});}document.documentElement.className=className;}());RLCONF={"wgBreakFrames":false,"wgSeparatorTransformTable":[",\t."," \t,"],"wgDigitTransformTable":["",""],"wgDefaultDateFormat":"dmy","wgMonthNames":["","январь","февраль","март","апрель","май","июнь","июль","август","сентябрь","октябрь","ноябрь","декабрь"],"wgRequestId":"d73e5612d7e73bc854042eac","wgCanonicalNamespace":"","wgCanonicalSpecialPageName":false,"wgNamespaceNumber":0,"wgPageName":"FireURQ:Особенности_реализации_URQL","wgTitle":"FireURQ:Особенности реализации URQL","wgCurRevisionId":28810,"wgRevisionId":28810,"wgArticleId":2681,"wgIsArticle":true,"wgIsRedirect":false,"wgAction":"view","wgUserName":null,"wgUserGroups":["*"],"wgCategories":["Документация FireURQ"],"wgPageViewLanguage":"ru","wgPageContentLanguage":"ru","wgPageContentModel":"wikitext","wgRelevantPageName":"FireURQ:Особенности_реализации_URQL","wgRelevantArticleId":2681,"wgIsProbablyEditable":false,"wgRelevantPageIsProbablyEditable":false,"wgRestrictionEdit":[],"wgRestrictionMove":[],"wgPageFormsTargetName":null,"wgPageFormsAutocompleteValues":[],"wgPageFormsAutocompleteOnAllChars":false,"wgPageFormsFieldProperties":[],"wgPageFormsCargoFields":[],"wgPageFormsDependentFields":[],"wgPageFormsCalendarValues":[],"wgPageFormsCalendarParams":[],"wgPageFormsCalendarHTML":null,"wgPageFormsGridValues":[],"wgPageFormsGridParams":[],"wgPageFormsContLangYes":null,"wgPageFormsContLangNo":null,"wgPageFormsContLangMonths":[],"wgPageFormsHeightForMinimizingInstances":800,"wgPageFormsDelayReload":false,"wgPageFormsShowOnSelect":[],"wgPageFormsScriptPath":"/extensions/PageForms","edgValues":[],"wgPageFormsEDSettings":null,"wgAmericanDates":false,"wgCiteReferencePreviewsActive":true,"wgMediaViewerOnClick":true,"wgMediaViewerEnabledByDefault":true,"wgMFDisplayWikibaseDescriptions":{"search":false,"watchlist":false,"tagline":false},"wgVisualEditor":{"pageLanguageCode":"ru","pageLanguageDir":"ltr","pageVariantFallbacks":"ru"},"wgPopupsFlags":0,"wgEditSubmitButtonLabelPublish":false};
+RLSTATE={"site.styles":"ready","user.styles":"ready","user":"ready","user.options":"loading","skins.vector.styles.legacy":"ready","ext.visualEditor.desktopArticleTarget.noscript":"ready"};RLPAGEMODULES=["ext.smw.styles","smw.entityexaminer","site","mediawiki.page.ready","mediawiki.toc","skins.vector.legacy.js","ext.visualEditor.desktopArticleTarget.init","ext.visualEditor.targetLoader","ext.popups","ext.smw.purge"];</script>
+<script>(RLQ=window.RLQ||[]).push(function(){mw.loader.impl(function(){return["user.options@12s5i",function($,jQuery,require,module){mw.user.tokens.set({"patrolToken":"+\\","watchToken":"+\\","csrfToken":"+\\"});
+}];});});</script>
+<link rel="stylesheet" href="/load.php?lang=ru&amp;modules=ext.visualEditor.desktopArticleTarget.noscript%7Cskins.vector.styles.legacy&amp;only=styles&amp;skin=vector">
+<script async="" src="/load.php?lang=ru&amp;modules=startup&amp;only=scripts&amp;raw=1&amp;skin=vector"></script>
+<style>#mw-indicator-mw-helplink {display:none;}</style>
+<meta name="ResourceLoaderDynamicStyles" content="">
+<link rel="stylesheet" href="/load.php?lang=ru&amp;modules=site.styles&amp;only=styles&amp;skin=vector">
+<meta name="generator" content="MediaWiki 1.43.3">
+<meta name="robots" content="max-image-preview:standard">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="/icons/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+<meta name="viewport" content="width=1120">
+<link rel="apple-touch-icon" sizes="57x57" href="/icons/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="/icons/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="/icons/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="/icons/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="/icons/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="/icons/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="/icons/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="/icons/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/icons/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icons/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="/icons/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png">
+<link rel="manifest" href="/manifest.json">
+<link rel="alternate" type="application/rdf+xml" title="FireURQ:Особенности реализации URQL" href="/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:ExportRDF&amp;xmlmime=rdf">
+<link rel="search" type="application/opensearchdescription+xml" href="/rest.php/v1/search" title="IFВики (ru)">
+<link rel="EditURI" type="application/rsd+xml" href="https://ifwiki.ru/api.php?action=rsd">
+<link rel="license" href="https://creativecommons.org/licenses/by-nc/3.0/">
+<link rel="alternate" type="application/atom+xml" title="IFВики — Atom-лента" href="/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D0%B5%D0%B6%D0%B8%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8&amp;feed=atom">
+</head>
+<body class="skin-vector-legacy mediawiki ltr sitedir-ltr mw-hide-empty-elt ns-0 ns-subject page-FireURQ_Особенности_реализации_URQL rootpage-FireURQ_Особенности_реализации_URQL skin-vector action-view"><div id="mw-page-base" class="noprint"></div>
+<div id="mw-head-base" class="noprint"></div>
+<div id="content" class="mw-body" role="main">
+	<a id="top"></a>
+	<div id="siteNotice"></div>
+	<div class="mw-indicators">
+	<div id="mw-indicator-smw-entity-examiner" class="mw-indicator"><div class="smw-entity-examiner smw-indicator-vertical-bar-loader" data-subject="FireURQ:Особенности_реализации_URQL#0##" data-dir="ltr" data-uselang="" title="Running an examiner in the background"></div></div>
+	</div>
+	<h1 id="firstHeading" class="firstHeading mw-first-heading"><span class="mw-page-title-main">FireURQ:Особенности реализации URQL</span></h1>
+	<div id="bodyContent" class="vector-body">
+		<div id="siteSub" class="noprint">Материал из IFВики</div>
+		<div id="contentSub"><div id="mw-content-subtitle"></div></div>
+		<div id="contentSub2"></div>
+		
+		<div id="jump-to-nav"></div>
+		<a class="mw-jump-link" href="#mw-head">Перейти к навигации</a>
+		<a class="mw-jump-link" href="#searchInput">Перейти к поиску</a>
+		<div id="mw-content-text" class="mw-body-content"><div class="mw-content-ltr mw-parser-output" lang="ru" dir="ltr"><div id="toc" class="toc" role="navigation" aria-labelledby="mw-toc-heading"><input type="checkbox" role="button" id="toctogglecheckbox" class="toctogglecheckbox" style="display:none" /><div class="toctitle" lang="ru" dir="ltr"><h2 id="mw-toc-heading">Содержание</h2><span class="toctogglespan"><label class="toctogglelabel" for="toctogglecheckbox"></label></span></div>
+<ul>
+<li class="toclevel-1 tocsection-1"><a href="#Операции"><span class="tocnumber">1</span> <span class="toctext">Операции</span></a></li>
+<li class="toclevel-1 tocsection-2"><a href="#Подстановки_(#...$_и_#%...$)"><span class="tocnumber">2</span> <span class="toctext">Подстановки (#...$ и #%...$)</span></a></li>
+<li class="toclevel-1 tocsection-3"><a href="#Параметры_при_переходах"><span class="tocnumber">3</span> <span class="toctext">Параметры при переходах</span></a></li>
+<li class="toclevel-1 tocsection-4"><a href="#Локальные_действия"><span class="tocnumber">4</span> <span class="toctext">Локальные действия</span></a></li>
+<li class="toclevel-1 tocsection-5"><a href="#Инклюды"><span class="tocnumber">5</span> <span class="toctext">Инклюды</span></a></li>
+<li class="toclevel-1 tocsection-6"><a href="#Музыка_и_звук"><span class="tocnumber">6</span> <span class="toctext">Музыка и звук</span></a>
+<ul>
+<li class="toclevel-2 tocsection-7"><a href="#Звуки"><span class="tocnumber">6.1</span> <span class="toctext">Звуки</span></a></li>
+<li class="toclevel-2 tocsection-8"><a href="#Музыка"><span class="tocnumber">6.2</span> <span class="toctext">Музыка</span></a></li>
+<li class="toclevel-2 tocsection-9"><a href="#Озвучка_локаций"><span class="tocnumber">6.3</span> <span class="toctext">Озвучка локаций</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-10"><a href="#Изображения"><span class="tocnumber">7</span> <span class="toctext">Изображения</span></a></li>
+<li class="toclevel-1 tocsection-11"><a href="#Текст"><span class="tocnumber">8</span> <span class="toctext">Текст</span></a>
+<ul>
+<li class="toclevel-2 tocsection-12"><a href="#Выравнивание_текста"><span class="tocnumber">8.1</span> <span class="toctext">Выравнивание текста</span></a></li>
+<li class="toclevel-2 tocsection-13"><a href="#Цвет_текста"><span class="tocnumber">8.2</span> <span class="toctext">Цвет текста</span></a></li>
+<li class="toclevel-2 tocsection-14"><a href="#Шрифт_текста"><span class="tocnumber">8.3</span> <span class="toctext">Шрифт текста</span></a></li>
+<li class="toclevel-2 tocsection-15"><a href="#Кнопки"><span class="tocnumber">8.4</span> <span class="toctext">Кнопки</span></a></li>
+<li class="toclevel-2 tocsection-16"><a href="#Ссылки"><span class="tocnumber">8.5</span> <span class="toctext">Ссылки</span></a></li>
+<li class="toclevel-2 tocsection-17"><a href="#Выпадающие_меню"><span class="tocnumber">8.6</span> <span class="toctext">Выпадающие меню</span></a></li>
+<li class="toclevel-2 tocsection-18"><a href="#Вывод_в_текстовый_файл"><span class="tocnumber">8.7</span> <span class="toctext">Вывод в текстовый файл</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-19"><a href="#Декораторы"><span class="tocnumber">9</span> <span class="toctext">Декораторы</span></a>
+<ul>
+<li class="toclevel-2 tocsection-20"><a href="#Создание_декораторов"><span class="tocnumber">9.1</span> <span class="toctext">Создание декораторов</span></a></li>
+<li class="toclevel-2 tocsection-21"><a href="#Управление_декораторами"><span class="tocnumber">9.2</span> <span class="toctext">Управление декораторами</span></a></li>
+<li class="toclevel-2 tocsection-22"><a href="#Маски_имён"><span class="tocnumber">9.3</span> <span class="toctext">Маски имён</span></a></li>
+<li class="toclevel-2 tocsection-23"><a href="#Переменные_декораторов"><span class="tocnumber">9.4</span> <span class="toctext">Переменные декораторов</span></a></li>
+<li class="toclevel-2 tocsection-24"><a href="#Скрипты_декораторов"><span class="tocnumber">9.5</span> <span class="toctext">Скрипты декораторов</span></a></li>
+</ul>
+</li>
+<li class="toclevel-1 tocsection-25"><a href="#Скины"><span class="tocnumber">10</span> <span class="toctext">Скины</span></a></li>
+<li class="toclevel-1 tocsection-26"><a href="#Формат_квестов_QSZ"><span class="tocnumber">11</span> <span class="toctext">Формат квестов QSZ</span></a></li>
+<li class="toclevel-1 tocsection-27"><a href="#Режим_отладки"><span class="tocnumber">12</span> <span class="toctext">Режим отладки</span></a></li>
+<li class="toclevel-1 tocsection-28"><a href="#Инвентарь"><span class="tocnumber">13</span> <span class="toctext">Инвентарь</span></a></li>
+<li class="toclevel-1 tocsection-29"><a href="#Предопределенные_функции"><span class="tocnumber">14</span> <span class="toctext">Предопределенные функции</span></a></li>
+<li class="toclevel-1 tocsection-30"><a href="#Anykey"><span class="tocnumber">15</span> <span class="toctext">Anykey</span></a></li>
+<li class="toclevel-1 tocsection-31"><a href="#Time"><span class="tocnumber">16</span> <span class="toctext">Time</span></a></li>
+<li class="toclevel-1 tocsection-32"><a href="#Mousecursor"><span class="tocnumber">17</span> <span class="toctext">Mousecursor</span></a></li>
+<li class="toclevel-1 tocsection-33"><a href="#Сохранение_игры_и_оператор_SAVE"><span class="tocnumber">18</span> <span class="toctext">Сохранение игры и оператор SAVE</span></a></li>
+<li class="toclevel-1 tocsection-34"><a href="#Загрузка_игры_через_оператор_LOAD"><span class="tocnumber">19</span> <span class="toctext">Загрузка игры через оператор LOAD</span></a></li>
+<li class="toclevel-1 tocsection-35"><a href="#Перманентное_хранилище_данных"><span class="tocnumber">20</span> <span class="toctext">Перманентное хранилище данных</span></a></li>
+<li class="toclevel-1 tocsection-36"><a href="#Другое"><span class="tocnumber">21</span> <span class="toctext">Другое</span></a></li>
+</ul>
+</div>
+
+<h2><span id=".D0.9E.D0.BF.D0.B5.D1.80.D0.B0.D1.86.D0.B8.D0.B8"></span><span class="mw-headline" id="Операции">Операции</span></h2>
+<ul><li>Есть оператор  <b>&lt;&gt;</b> (не равно).</li>
+<li>Можно производить операцию сложения над строками. Т.е. можно сделать <b>zz = xx + "urq"</b> – и это будет работать, при условии, что <b>xx</b> — строковая переменная.</li>
+<li>Числовое представление строки — всегда число: длина этой строки. Это касается всех арифметических операций. Строковое представление числовой переменной — пустая строка (как в досурке).</li></ul>
+<h2><span id=".D0.9F.D0.BE.D0.B4.D1.81.D1.82.D0.B0.D0.BD.D0.BE.D0.B2.D0.BA.D0.B8_.28.23....24_.D0.B8_.23.25....24.29"></span><span class="mw-headline" id="Подстановки_(#...$_и_#%...$)">Подстановки (#...$ и #%...$)</span></h2>
+<p>Работают только в пределах одного оператора. Т.е. вставить if с помощью подстановки — не получится, т.к. <b>if...then...else</b> — это конструкция языка, а не оператор.
+</p><p>Подстановка #...$ работает для числовых значений переменных, тогда как #%...$ для текстовых. Для подробностей см. <a rel="nofollow" class="external text" href="http://ifwiki.ru/FireURQ:%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE_%D0%BF%D0%BE%D0%BB%D1%8C%D0%B7%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8F#.D0.92.D1.8B.D0.B2.D0.BE.D0.B4_.D0.BF.D0.B5.D1.80.D0.B5.D0.BC.D0.B5.D0.BD.D0.BD.D1.8B.D1.85">руководство</a>.
+</p>
+<h2><span id=".D0.9F.D0.B0.D1.80.D0.B0.D0.BC.D0.B5.D1.82.D1.80.D1.8B_.D0.BF.D1.80.D0.B8_.D0.BF.D0.B5.D1.80.D0.B5.D1.85.D0.BE.D0.B4.D0.B0.D1.85"></span><span class="mw-headline" id="Параметры_при_переходах">Параметры при переходах</span></h2>
+<p>При переходах (операторы <b>proc</b>, <b>btn</b> и <b>goto</b>) возможно передать параметры на метку, на которую происходит переход. 
+<i>Синтаксис:</i>
+</p>
+<pre><b>goto &lt;метка&gt;[(param1, param2, ...)]</b>
+<b>proc &lt;метка&gt;[(param1, param2, ...)]</b>
+<b>btn &lt;метка&gt;[(param1, param2, ...)], &lt;текст на кнопке&gt;</b>
+</pre>
+<p>В качестве параметров могут быть использованы любые выражения. Параметры при этом попадают в переменные <b>&lt;метка&gt;_1</b>, <b>&lt;метка&gt;_2</b> и так далее. Все старые значения "переменных с параметрами" — удаляются (даже если в прошлый раз было больше параметров).
+Возможен максимум - 50 параметров.
+</p>
+<div style="background-color:LavenderBlush;padding:5px;border:1px solid Brown;"><font color="maroon"><b>Важное замечание:</b></font> при использовании параметров в операторе btn подстановки (<b>#...$</b> и <b>#%...$</b>) раскрываются ПРИ ДОБАВЛЕНИИ КНОПКИ, а вычисление выражений в параметрах производится ПРИ НАЖАТИИ НА КНОПКУ.</div> 
+<p><i>Пример:</i>
+</p>
+<pre><b>btn mylabel(2+2, "четыре"), Кнопка с параметрами</b>
+</pre>
+<p>При нажатии на эту кнопку переменная <b>mylabel_1</b> примет числовое значение <b>4</b>, а переменная <b>mylabel_2</b> — строковое значение <b>"четыре"</b>.
+</p>
+<h2><span id=".D0.9B.D0.BE.D0.BA.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F"></span><span class="mw-headline" id="Локальные_действия">Локальные действия</span></h2>
+<p>Локальные действия, это действия не уводящие с локации. Т.е. можно сделать такую кнопку или ссылку, при нажатии на которую: 
+</p>
+<ul><li>не будут очищены кнопки</li>
+<li>не изменится переменная <b>current_loc</b></li>
+<li>не выполнится <b>common</b>-локация</li></ul>
+<p>Локальные действия ведут себя, в целом, так же, как действия над предметами инвентаря. 
+</p><p>Для того, чтобы создать локальное действие, надо перед названием локации в кнопке или ссылке поставить <i>восклицательный знак</i>: 
+</p>
+<pre><b>btn</b> <b>!</b>local, Эта кнопка не уведёт с локации 
+<b>pln</b> Эта <b>[[</b>ссылка|<b>!</b>local_location<b>]]</b> тоже не уведёт с локации...
+</pre>
+<h2><span id=".D0.98.D0.BD.D0.BA.D0.BB.D1.8E.D0.B4.D1.8B"></span><span class="mw-headline" id="Инклюды">Инклюды</span></h2>
+<p>Начиная с версии 1.8 в FURQ есть возможность «собирать» код игры из нескольких файлов. Для этого следует использовать макрос <b>%include &lt;имя_файла.qst&gt;</b>. 
+При этом действуют следующие правила:
+</p>
+<ul><li>Макрос инклюда должен быть один на строке.</li>
+<li>Инклюды обрабатываются при загрузке квеста, поэтому подстановки там не действуют.</li>
+<li>Каждый файл включается один раз. Другими словами, <b>%include</b> не вставляет код из файла в то место, где он был вызван, а просто указывает, что этот код должен присутствовать в квесте.</li>
+<li>Имена меток и переменных сквозные. Следите, чтобы метки в разных файлах назывались по-разному.</li>
+<li>Возможно использовать относительные пути, например <b>%include inc\mylib.qst</b>, при этом путь указывается относительно того файла, в котором вызывается макрос. Т.е. если вы в вышеприведённом <b>mylib.qst</b> вызовете <b>%include more\lowlevel.qst</b>, то <b>lowlevel.qst</b> должен лежать в папке <b>inc\more\</b>, относительно главного файла квеста.</li>
+<li>Все ресурсы игры (картинки, музыка, шрифты) вызываются относительно главного файла квеста, в каких бы инклюдах и папках не находился код, их вызывающий.</li>
+<li>При упаковке в <b>QSZ</b> главный файл квеста должен называться<b> main.qst</b> или <b>game.qst</b> (qs1, qs2), чтобы интерпретатор понял, с чего начинать. Если FireURQ не найдёт такого файла в архиве, то вызовет первый попавшийся.</li></ul>
+<h2><span id=".D0.9C.D1.83.D0.B7.D1.8B.D0.BA.D0.B0_.D0.B8_.D0.B7.D0.B2.D1.83.D0.BA"></span><span class="mw-headline" id="Музыка_и_звук">Музыка и звук</span></h2>
+<p><b>FireURQ</b> поддерживает множество форматов музыки и звука. Командой <b>play</b> можно воспроизводить звуки. Музыка воспроизводится командой <b>music</b>.
+</p>
+<h3><span id=".D0.97.D0.B2.D1.83.D0.BA.D0.B8"></span><span class="mw-headline" id="Звуки">Звуки</span></h3>
+<pre><b>play [loop|stop] [&lt;имя файла&gt;[, &lt;громкость&gt;]]</b>
+</pre>
+<p><b>имя файла</b> – это имя файла формата WAV/AIFF/MP3/MP2/MP1/OGG
+</p><p><b>громкость</b> – может принимать значения от <b>0</b> до <b>255</b>
+</p><p>Если указать параметр <b>loop</b>, то воспроизведение звука будет зациклено (полезно, если нужно реализовать фоновый эмбиентный звук). Если указан параметр <b>stop</b>, то конкретный звук (все его «ипостаси», если воспроизведение конкретного звука было запущено несколько раз) будет остановлен. Если указать stop и не указать имя файла, то будут остановлены все звуки.
+</p>
+<h3><span id=".D0.9C.D1.83.D0.B7.D1.8B.D0.BA.D0.B0"></span><span class="mw-headline" id="Музыка">Музыка</span></h3>
+<pre><b>music &lt;имя файла&gt;|stop[, &lt;время в миллисекундах&gt;]</b>
+</pre>
+<p><b>имя файла</b> – это имя файла формата WAV/AIFF/MP3/MP2/MP1/OGG, плюс форматы трекерной музыки: XM, IT, S3M, MOD, MTM, UMX. Кроме того, воспроизводится и MIDI-музыка (файлы MID). Также поддерживается формат MO3 (трекерная музыка с OGG-упакованными семплами). Конвертер для превращения любого трекерного формата в MO3 можно скачать с сайта <a rel="nofollow" class="external free" href="http://un4seen.com/">http://un4seen.com/</a>. 
+</p><p>Если требуется остановить воспроизведение, то вместо имени файла указывается <b>stop</b>.
+</p><p><b>время в миллисекундах</b> – время, в течении которого громкость музыки будет нарастать (или угасать – в зависимости от того, включаем мы воспроизведение, или выключаем). Если музыка уже звучит и мы запускаем новый трек с указанием времени нарастания громкости, то будет исполнен эффект crossfade – старый трек будет угасать, а новый – нарастать по громкости, при этом мелодии пересекаются. Если же поставить знак минуса перед временем затухания, то мелодии перекрываться не будут.
+</p><p>Пример:
+</p>
+<pre><b>music some.ogg, -1500</b>
+</pre>
+<p>Переменная <b>is_music</b> равна <b>1</b>, если в игре играет музыка, и <b>0</b> — если нет. 
+</p><p>Для регулировки громкости музыки используется переменная  <b>music_volume</b>, которая может принимать значения от <b>0</b> до <b>255</b>.
+</p><p>Возможно плавное изменение громкости музыки командой <b>fademusic</b>:
+</p>
+<pre><b>fademusic &lt;громкость&gt;, &lt;время в миллисекундах&gt;</b>
+</pre>
+<p><b>громкость</b> – целевая громкость музыки.
+</p><p><b>время в миллисекундах</b> – время, в течении которого громкость достигнет целевого значения.
+Кроме того, для музыки поддерживается переменная <b>music_looped</b>, которая принимает два значения: <b>1</b> и <b>0</b>. Эта переменная указывает, будет ли воспроизводимая музыка зациклена или проиграет один раз и остановится. По умолчанию равна <b>1</b> (музыка зацикливается).
+</p>
+<div style="background-color:LavenderBlush;padding:5px;border:1px solid Brown;"><font color="maroon"><b>Важное замечание:</b></font> некоторые файлы трекерной музыки зациклены сами по себе, с помощью внутренних команд формата. Такие файлы будут играть по кругу вне зависимости от переменной <b>music_looped</b>.</div>
+<h3><span id=".D0.9E.D0.B7.D0.B2.D1.83.D1.87.D0.BA.D0.B0_.D0.BB.D0.BE.D0.BA.D0.B0.D1.86.D0.B8.D0.B9"></span><span class="mw-headline" id="Озвучка_локаций">Озвучка локаций</span></h3>
+<pre><b>voice &lt;имя файла&gt;</b>
+<b>voice stop</b>
+</pre>
+<p>С помощью команды <b>voice</b> можно удобно озвучивать локации в квестах. Действие этой команды аналогично действию команды <b>play</b> – проигрывается звук, указанный в качестве параметра, за несколькими исключениями:
+</p>
+<ul><li>Озвучка может быть только одна в любой момент времени. Каждая следующая команда <b>voice</b> останавливает предыдущую;</li>
+<li>Переход по кнопке (<b>btn</b>) также останавливает озвучку.</li>
+<li>Громкость озвучки регулируется с помощью переменной <b>voice_volume</b>, а не указывается напрямую в команде.</li></ul>
+<h2><span id=".D0.98.D0.B7.D0.BE.D0.B1.D1.80.D0.B0.D0.B6.D0.B5.D0.BD.D0.B8.D1.8F"></span><span class="mw-headline" id="Изображения">Изображения</span></h2>
+<p><b>FireURQ</b> позволяет вставлять изображения в текст квеста. Для этого служит команда <b>image</b>. 
+<b>Синтаксис:</b>
+</p>
+<pre><b>image &lt;имя файла&gt;[, X, Y, ширина, высота]</b>
+</pre>
+<ul><li><b>имя файла</b> – это имя файла изображения в формате JPEG, PNG или TGA.</li>
+<li>Дополнительные параметры позволяют вывести не все изображение, а его часть. При этом <b>X</b> и <b>Y</b> задают верхний левый угол окна, а ширина и высота – размеры «вырезаемого» кусочка.</li></ul>
+<p>Изображение вставляются в текст и ведут себя как обычные буквы.  Альфа для вставляемого изображения берется из цвета текста (переменная <b>textcolor </b> – см. ниже).
+</p>
+<h2><span id=".D0.A2.D0.B5.D0.BA.D1.81.D1.82"></span><span class="mw-headline" id="Текст">Текст</span></h2>
+<h3><span id=".D0.92.D1.8B.D1.80.D0.B0.D0.B2.D0.BD.D0.B8.D0.B2.D0.B0.D0.BD.D0.B8.D0.B5_.D1.82.D0.B5.D0.BA.D1.81.D1.82.D0.B0"></span><span class="mw-headline" id="Выравнивание_текста">Выравнивание текста</span></h3>
+<p><b>FireURQ</b> позволяет выравнивать текст влево, вправо или по центру. Для установки нужного режима выравнивания текста служит переменная <b>textalign</b>. Она может принимать следующие значения:
+</p>
+<ul><li><b>1</b> – текст выравнивается влево</li>
+<li><b>2</b> – текст выравнивается вправо</li>
+<li><b>3</b> – текст выравнивается по центру</li></ul>
+<p>Естественно, выравнивание работает лишь внутри одного «абзаца». Если вы выводили текст командой <b>print</b> (без переноса), затем сменили выравнивание и попытались что-то вывести в той же строке, то текст с другим выравниванием будет перенесен на другую строку автоматически.
+Переменная <b>btnalign</b> позволяет выровнять кнопки действия. А <b>btntxtalign</b> – текст внутри кнопок (т.е. надписи на кнопках). Следует отметить, что выравнивание кнопок работает только для всех кнопок скопом. Т.е. не получится выровнять одну кнопу вправо, а другую – влево.
+</p><p>Расстояние между строками и параграфами определяется следующими системными переменными:
+</p>
+<ul><li><b>linespacing</b> – вертикальное расстояние между строк текста (по умолчанию <b>3</b>)</li>
+<li><b>paraspacing</b> – вертикальное расстояние между параграфами (по умолчанию <b>3</b>)</li></ul>
+<p><i><b>Пример:</b></i>
+</p>
+<pre><b>textalign = 1</b>
+<b>btnalign = 3</b>
+<b>btntxtalign = 3</b>
+Этот код выведет последующий текст с выравниванием влево, а кнопки - посередине, так же посередине будет располагаться и текст в кнопках.
+</pre>
+<h3><span id=".D0.A6.D0.B2.D0.B5.D1.82_.D1.82.D0.B5.D0.BA.D1.81.D1.82.D0.B0"></span><span class="mw-headline" id="Цвет_текста">Цвет текста</span></h3>
+<p>Для определения цвета выводимого текста служит переменная <b>textcolor</b>. Цвет в <b>FireURQ</b> задается шестнадцатиричным числом в формате 0xAARRGGBB. То есть четыре составляющих: альфа(прозрачность), красный, зеленый и синий. При этом альфу можно опускать, т.е. цвет <b>0xFF7F05BB</b> и <b>0x7F05BB</b> – равнозначны. Также, для обратной совместимости поддерживается переменная <b>Style_dos_textcolor</b>, которая работает так же, как и в <b>DOS_URQ</b>. Цвет фона менять нельзя, только цвет букв.
+<i><b>Пример:</b></i>
+</p>
+<pre><b>textcolor = 0xFF990000</b>
+Этот код изменит цвет последующего текста на оттенок красного.
+Текст будет непрозрачен.
+</pre>
+<h3><span id=".D0.A8.D1.80.D0.B8.D1.84.D1.82_.D1.82.D0.B5.D0.BA.D1.81.D1.82.D0.B0"></span><span class="mw-headline" id="Шрифт_текста">Шрифт текста</span></h3>
+<p>Для определения шрифта, которым будет выводиться текст, используется переменная textfont. В нее в виде строкового значения следует записать имя файла шрифта. FireURQ может использовать растровые шрифты формата HGE Font (заимствовано из библиотеки HGE). Редактор, позволяющий конвертировать шрифты, установленные в Windows, в формат HGE Font, входит в дистрибутив (папка <b>fonted</b>). 
+</p><p>Чтобы вернуться к шрифту по умолчанию, следует выполнить <b>textfont = "_sysfont"</b>.
+</p>
+<div style="background-color:LavenderBlush;padding:5px;border:1px solid Brown;"><font color="maroon"><b>Важное замечание:</b></font>  вполне возможно писать разными шрифтами внутри одного абзаца текста. Но этого не рекомендуется делать со шрифтами разных размеров. Формат HGE Font не предусматривает такое понятие, как «базовая линия». Поэтому, куски текста, написанные разными шрифтами, будут «прыгать» относительно друг друга.</div>
+<p>TrueType шрифты используются так:
+</p>
+<pre><b>textfont = "file.ttf[&lt;size&gt;, &lt;gamma&gt;, &lt;weight&gt;, &lt;bgcolor&gt;]"</b>
+</pre>
+<ul><li><b>size</b> – размер шрифта(по умолчанию <b>19</b>)</li>
+<li><b>gamma</b> – гамма, т.е. "светлость" границ шрифта(по умолчанию <b>1.0</b>)</li>
+<li><b>weight</b> – толщина(по умолчанию <b>0.6</b>)</li>
+<li><b>bgcolor</b> – цвет подложки (по умолчанию <b>0x808080</b>)</li></ul>
+<p>Параметры можно опускать.
+</p>
+<div style="background-color:LavenderBlush;padding:5px;border:1px solid Brown;"><font color="maroon"><b>Важное замечание:</b></font> Поскольку из TTF генерится битмапный шрифт и края должны "подходить" к фону, на котором потом выводится текст, то для идеального отображения шрифта можно подставить соответствующий цвет в <b>bgcolor</b>. <b>Gamma</b> и <b>weight</b> по умолчанию подобраны для шрифтов на чёрном фоне. Возможно, для светлого фона их нужно немного поменять.</div>
+<p><i><b>Примеры:</b></i>
+</p>
+<pre><b>textfont = "georgia.ttf[20,1.1]"</b>
+<b>textfont = "verdana.ttf[10,,,0xFFFFFF]"</b>
+<b>textfont = "timesi.ttf[32,,1.3]"</b>
+</pre>
+<pre><i><b>Пример использования в игре:</b></i>
+<b>textfont = "georgia.ttf[18, 1.0, 0.1, 0x000000]"</b>
+Такой шрифт идеально подойдёт для светлых фонов
+
+</pre>
+<p>Файлы TrueType шрифтов (.ttf) должны лежать в папке игры (в архиве <b>QSZ</b>). Если их там нет, то игра возьмёт системный шрифт для текста по умолчанию.
+</p><p>Фурка носит с собой шрифты стандартных начертаний с засечками (<b>serif</b>) и без засечек (<b>sans</b>) трёх начертаний- обычной, полужирной (<b>bold</b>) и наклонной (<b>italic</b>). Эти стандартные шрифты можно использовать, подставляя вместо имени файла TTF название, комбинирующее нужное начертание шрифта. Например, 
+</p>
+<pre><b>textfont = "serif[35]"</b>
+</pre>
+<p>это шрифт с засечками 35-го размера. А
+</p>
+<pre><b>textfont = "sans-bold-italic[18]"</b>
+</pre>
+<p>это полужирный наклонный шрифт без засечек 18-го размера.
+</p><p>Шрифты таким образом можно использовать как в коде игры, так и в <a href="/FireURQ:%D0%A1%D0%BA%D0%B8%D0%BD%D1%8B" title="FireURQ:Скины">скинах</a>.
+</p>
+<h3><span id=".D0.9A.D0.BD.D0.BE.D0.BF.D0.BA.D0.B8"></span><span class="mw-headline" id="Кнопки">Кнопки</span></h3>
+<p><b>FireURQ</b> позволяет использовать в тексте кнопки. Кнопки всегда расположены после выведенного текста и используются для переходов по меткам.
+Начиная с версии 1.9.1, формат кнопок таков:
+</p>
+<pre><b>btn</b> &lt;локация&gt;[(param1, param2, ...)][, &lt;надпись на кнопке&gt;]
+</pre>
+<p>Где <b>&lt;локация&gt;</b> - имя метки, на которую будет совершен переход, <b>param1</b>, <b>param1</b> и т.д.  - параметры, передаваемые в эту локацию, <b>&lt;надпись на кнопке&gt;</b> - надпись на кнопке, которая отображается на экране. В случае если <b>&lt;надпись на кнопке&gt;</b> не указана, в качестве надписи используется название метки, куда ведет кнопка.
+</p><p><i><b>Пример:</b></i>
+</p>
+<pre>Можно написать без параметров:
+<b>btn лес,Войти в лес</b>
+а можно добавить параметры:
+<b>btn лес(1,"опушка"),Войти в лес</b>
+В обоих случаях этот код сделает кнопку с надписью <b>Войти в лес</b>, ведущую на локацию <b>лес</b>
+но во втором варианте, на локации лес, переменные <b>лес_1</b> и <b>лес_2</b> будут соответссвенно равны <b>1</b> и <b>опушка</b>
+то есть, если мы напишем код:
+<b>:лес</b>
+<b>pln #лес_1$ и #%лес_2$</b>
+<b>end</b>
+то в результате, при переходе по кнопке, увидим на экране:
+<b>1 и опушка</b>
+Это очень удобно для организации проверок внутри локации.
+</pre>
+<h3><span id=".D0.A1.D1.81.D1.8B.D0.BB.D0.BA.D0.B8"></span><span class="mw-headline" id="Ссылки">Ссылки</span></h3>
+<p><b>FireURQ</b> позволяет использовать в тексте (и декораторах) ссылки.
+</p><p>Формат ссылок:
+</p>
+<pre>[[текст ссылки|название локации]]
+</pre>
+<p><br />
+Пример:
+</p>
+<pre><b>pln</b> Вы стоите на берегу реки. Вдоль берега вьётся небольшая [[тропинка|trop]]...
+</pre>
+<p>Здесь <b>trop</b> - название локации, на которую будет осуществлён переход при нажатию на ссылку. Разумеется, как и в <b>btn</b>, можно использовать параметры локации. 
+</p><p>Цвет ссылок задаётся переменными <b>linkcolor</b> и <b>linkhcolor</b>. Первая отвечает за цвет ссылки в тексте, а вторая - за цвет ссылки при наведении мыши. Невалидные ссылки (указывающие на несуществующую локацию) всегда подсвечены красным цветом.
+</p><p>Упрощенный формат вывода ссылок такой:
+</p>
+<pre>[[текст ссылки]]
+</pre>
+<p>В данном случае ссылка будет вести на метку по названием "текст ссылки".
+</p><p>Пример:
+</p>
+<pre><b>pln</b> Вдоль берега вьётся [[тропинка]]...
+</pre>
+<p>Здесь, при клике на ссылку произойдет переход на метку "тропинка". Можно добавлять модификаторы, например <b>[[%меню]]</b> — модификатор на экран не выводится.
+</p><p>В ссылках есть возможность использовать <a rel="nofollow" class="external text" href="http://ifwiki.ru/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL#.D0.9B.D0.BE.D0.BA.D0.B0.D0.BB.D1.8C.D0.BD.D1.8B.D0.B5_.D0.B4.D0.B5.D0.B9.D1.81.D1.82.D0.B2.D0.B8.D1.8F">локальные действия</a> (действия, которые не уводят на другую локацию).
+</p>
+<h3><span id=".D0.92.D1.8B.D0.BF.D0.B0.D0.B4.D0.B0.D1.8E.D1.89.D0.B8.D0.B5_.D0.BC.D0.B5.D0.BD.D1.8E"></span><span class="mw-headline" id="Выпадающие_меню">Выпадающие меню</span></h3>
+<p>Начиная с версии 1.6 в <b>FireURQ</b> появилась возможность использовать меню, выпадающие при клике на ссылку или на кнопку . Меню формируются точно так же как обычные ссылки или кнопки с использованием символа <b>%</b> и могут быть любого уровня вложенности.
+</p><p>Общий синтаксис такой:
+</p>
+<pre>btn <b>%</b>&lt;Название локации&gt;, &lt;Текст на кнопке&gt;
+[[ &lt;Текст ссылки&gt; | <b>%</b>&lt;Название локации&gt;]]
+ 
+</pre>
+<p><b>Пример</b>
+</p>
+<pre><b>btn</b> <b>%</b>menu, По этой кнопке будет меню 
+
+<b>:menu</b>
+<b>btn</b> someloc, Первый пункт меню 
+<b>btn</b> anotherloc, Второй пункт меню 
+<b>btn</b> yetonemoreloc, Третий пункт меню 
+<b>end</b>
+</pre>
+<p>Все кнопки в меню-локации превращаются в пункты меню. В меню-локациях не разрешается использовать практически ничего, кроме конструкций <b>if..then..else'</b>, <b>goto</b>, <b>proc</b>, <b>btn</b> и работы с переменными, которые можно назначать и проверять. Все фантомные <b>btn</b> (ведущие на несуществующую локацию) становятся неактивными пунктами меню. 
+</p><p>Если в качестве имени кнопки использовать "-" (дефис), то в меню будет вставлена полоска-разделитель. 
+</p><p>Переменные для оформления меню (их тоже можно указывать прямо в меню-локации): 
+</p>
+<pre><b>menu_textfont</b> - шрифт меню 
+<b>menu_bgcolor</b> - цвет фона (можно делать и полупрозрачным) 
+<b>menu_bordercolor</b> - цвет рамки 
+<b>menu_textcolor</b> - цвет пунктов меню 
+<b>menu_hindent</b> - отбивка по горизонтали 
+<b>menu_vindent</b> - отбивка по вертикали 
+<b>menu_selectioncolor</b> - цвет фона выбранного элемента 
+<b>menu_seltextcolor</b> - цвет шрифта выбранного элемента 
+<b>menu_disabledcolor</b> - цвет шрифта неактивного элемента
+</pre>
+<p>С версии 2.0 появилась возможность задавать положение пользовательского меню относительно кнопки, ссылки и кнопок или ссылок в декораторах.
+</p>
+<ul><li><b>bmenualign</b> отвечает за положение меню относительно кнопок <b>btn</b></li>
+<li><b>lmenualign</b> отвечает за положение меню относительно ссылки.</li>
+<li><b>decor_имя_menualign</b> отвечает за положение меню относительно декоратора.</li></ul>
+<p><br />
+Эти переменные содержат строку из двух букв. Первая буква — это положение относительно объекта (кнопки или ссылки), вторая — выравнивание. 
+</p><p><b>Пример</b>
+</p>
+<pre> <b>bmenualign = «RB»</b>
+</pre>
+<p>меню относительно кнопок будет справа (Right) и выровнено по нижнему (Bottom) краю.
+</p><p><br />
+Значение для меню берётся из сочетаний первых букв положений: Top (верх), Bottom (низ), Center (центр), Left (лево), Right (право).
+</p><p><br />
+Значения по умолчани.
+</p>
+<ul><li>для кнопок - «TL»</li>
+<li>для ссылок — «RL»</li></ul>
+<h3><span id=".D0.92.D1.8B.D0.B2.D0.BE.D0.B4_.D0.B2_.D1.82.D0.B5.D0.BA.D1.81.D1.82.D0.BE.D0.B2.D1.8B.D0.B9_.D1.84.D0.B0.D0.B9.D0.BB"></span><span class="mw-headline" id="Вывод_в_текстовый_файл">Вывод в текстовый файл</span></h3>
+<p>С версии 1.9 <b>FURQ</b> поддерживает вывод текста в текстовый файл. Делается это при помощи команд <b>fp</b> и <b>fpln</b> (аналог <b>p</b> и <b>pln</b>, но только для записи текста в файл).
+</p><p>Синтаксис:
+</p>
+<pre><b>fprint &lt;текст&gt;</b> или <b>fp &lt;текст&gt;</b>
+</pre>
+<p>Оператор дописывает <b>текст</b> в файл, имя которого содержится в переменной <b>fp_filename</b>.
+</p>
+<pre><b>fprintln &lt;текст&gt;</b> или <b>fpln &lt;текст&gt;</b>
+</pre>
+<p>Оператор сохраняет <b>текст</b> и перевод строки в файл, имя которого содержится в переменной <b>fp_filename</b>.
+</p><p>Все файлы, в которые ведется запись, должны иметь расширение *.txt. Файлы создаются в той же папке, что и файл игры. В переменной <b>fp_filename</b> учитывается только имя файла, любой путь автоматически игнорируется.
+</p><p>Для работы с переменной <b>fp_filename</b> существует команда <b>newfile</b>:
+</p>
+<pre><b>newfile &lt;имя файла&gt;</b>
+</pre>
+<p>Команда присваивает переменной <b>fp_filename</b> имя файла и стирает этот файл.  Если же просто присвоить переменную <b>fp_filename</b>, то новые записи будут добавляться к уже существующему файлу.
+</p>
+<h2><span id=".D0.94.D0.B5.D0.BA.D0.BE.D1.80.D0.B0.D1.82.D0.BE.D1.80.D1.8B"></span><span class="mw-headline" id="Декораторы">Декораторы</span></h2>
+<p>Декораторы – это небольшие кусочки текста или графические объекты, которые можно поместить в любое место на экране. Декораторами можно управлять, например плавно перемещать или менять оттенок цвета. Графическим декоратором можно дополнительно изменять масштаб, угол наклона, скорость вращения и другие параметры. С помощью декораторов автор может лучше оформить квест, вывести дополнительные параметры или добавить анимационные эффекты.
+</p>
+<h3><span id=".D0.A1.D0.BE.D0.B7.D0.B4.D0.B0.D0.BD.D0.B8.D0.B5_.D0.B4.D0.B5.D0.BA.D0.BE.D1.80.D0.B0.D1.82.D0.BE.D1.80.D0.BE.D0.B2"></span><span class="mw-headline" id="Создание_декораторов">Создание декораторов</span></h3>
+<p>Общий синтаксис для добавления декоратора следующий: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) &lt;тип декоратора&gt; &lt;параметры&gt;</b> 
+</pre>
+<ul><li><b>имя</b> – имя декоратора, состоящее из цифр, букв и знаков подчеркивания. Пробелы в имени не допускаются.</li>
+<li><b>x</b>, <b>y</b> и <b>z</b> – координаты декоратора на экране. Параметр <b>z</b> используется для определения «глубины» декоратора. Чем меньше <b>z</b>, тем «ближе» декоратор к игроку. Все декораторы с <b>z</b> от 0 и больше располагаются «за» интерфейсом (кнопки управления и текстовое поле), а с <b>z</b> меньше 0 – «перед» ним. Если <b>z</b> не указан, то он принимается равным 0.</li>
+<li>тип декоратора может быть <b>TEXT</b>, <b>RECT</b>, <b>IMAGE</b>, <b>ANIMATION</b>, <b>GIF</b>, <b>TEXTBUTTON</b>, <b>IMGBUTTON</b> и <b>CLICKAREA</b>.</li>
+<li><b>параметры</b> – разные, в зависимости от типа декоратора.</li></ul>
+<p>Команда <b>decoradd</b> позволяет задать от одного до трёх цветов для текстового декоратора.
+</p><p>Теперь более подробно по типам. 
+</p><p>Тип <b>TEXT</b> позволяет добавить декоратор-кусочек текста: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) TEXT "собственно, текст" [, цвет[,"шрифт"]]</b>
+</pre>
+<p>Если <b>цвет</b> или <b>шрифт</b> не указаны, то они принимаются равными цвету и шрифту основного текста. 
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd добро_пожаловать (0,0, -1) TEXT "Добро пожаловать в игру", 0xFF990033, "georgiab.ttf[22]"</b>
+этот декоратор выведет текст - <b>Добро пожаловать в игру</b> с позиции <b>0,0</b> в окне, 
+с непрозрачным цветом <b>990033</b> и шрифтом <b>georgia</b> жирный <b>22</b> размера,
+располагающийся перед основным текстом и перекрывающий его
+</pre>
+<p>Тип <b>TEXTBUTTON</b> - декоратор «текстовая кнопка»: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (x, y[, z]) TEXTBUTTON ["рамка", ] "текст", "целевая локация"</b>
+</pre>
+<p><i>Целевая локация'</i> — имя локации для перехода в кавычках. <b>Текст</b> — надпись на кнопке. Надпись на текстовой кнопке можно менять при помощи переменной <b>decor_&lt;имя&gt;_text</b>. 
+'<b>Рамка</b> — это название рамки, которая должна быть определена в скине. Рамка применяется если нужно сделать много разных кнопок с разным оформлением. Рамки текстовых кнопок определяются в скине в разделе ресурсов. Если рамку не указать, то кнопка будет по умолчанию с тем же оформлением, что и btn-кнопки. 
+</p><p>Чтобы декоратор данного типа был активен, в переменной <i>decor_&lt;имя&gt;_enabled</i> должна стоять 1.
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd кнопка (10,100, -1) TEXTBUTTON "mybutton", "Благодарности", "об_игре"</b>
+в данном примере мы имеем кнопку с определённой в скине рамкой <b>mybutton</b>, с надписью <b>Благодарности</b>, 
+расположенную в позиции <b>10,100</b> экрана и ведущую в локацию <b>об_игре</b>,
+располагающуюся перед основным текстом и перекрывающую его
+</pre>
+<p>Тип <b>RECT</b> – это просто цветной прямоугольник: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) RECT ширина, высота [, цвет]</b> 
+</pre>
+<p>Если <b>цвет</b> не указан, то он принимается равным цвету основного текста.
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd квадрат (10,10, -1) RECT 300, 300, 0xFF990033</b>
+этот декоратор нарисует квадрат с позиции <b>10,10</b> в окне, шириной и высотой в <b>300</b> пикселей 
+с непрозрачным цветом <b>990033</b>, располагающийся перед основным текстом и перекрывающий его 
+</pre>
+<p>Тип <b>CLICKAREA</b> – это невидимый прямоугольник, который реагирует на нажатия мыши (клики): 
+</p>
+<pre><b>decoradd &lt;имя&gt; (x, y[, z]) CLICKAREA ширина, высота, "целевая локация"</b> 
+</pre>
+<p><b>Целевая локация</b> — имя локации в кавычках. Декоратор поддерживает модификаторы (см. раздел о ссылках), т.е. можно сделать выпадающее меню, переход или локальное действие.
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd область_клика (50,50, -1) CLICKAREA 200, 50, "переход"</b>
+этот декоратор выведет прямоугольную область на экране в позиции <b>50,50</b> окна, шириной <b>250</b> и высотой <b>50</b>, 
+располагающуюся перед основным текстом и перекрывающую его, кликнув на которую, мы попадём в локацию <b>переход</b>
+</pre>
+<p>Тип <b>IMAGE</b> – это декоратор-картинка. Параметры этого декоратора очень похожи на параметры оператора <b>image</b> (см. выше)&#160;: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) IMAGE "имя_файла"[, X, Y, ширина, высота]</b>
+</pre>
+<p>Как и в операторе <b>image</b> , дополнительные параметры позволяют вывести лишь часть картинки. Если у вас много аниматоров-картинок, то, в целях быстродействия, рекомендуется размещать их на одном «полотне», а не загружать из разных файлов.
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd бэкграунд (0,0, 2) IMAGE "back.png", 0, 0, 1024, 768</b>
+этот декоратор выведет картинку из файла <b>back.png</b> на экран в позиции <b>0,0</b> окна, шириной <b>1024</b> и высотой <b>768</b>,
+располагающуюся за основным текстом
+</pre>
+<p>Тип <b>IMGBUTTON</b> - декоратор «кнопка-картинка»:
+</p>
+<pre><b>decoradd &lt;имя&gt; (x, y[, z]) IMGBUTTON "файл-текстура", [tx, ty, ширина, высота,] "целевая локация"</b>
+</pre>
+<p><b>файл-текстура</b> — это полноцветный PNG с прозрачностью, 
+<b>tx</b>, <b>ty</b> — это координаты верхнего левого угла В ПРОСТРАНСТВЕ ТЕКСТУРЫ, 
+<b>ширина</b> и <b>высота</b> — это ширина и высота одного КАДРА.
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd моя_кнопка (50,50, -1) IMGBUTTON "button.png", 0, 0, 100, 50, "лес"</b>
+этот декоратор выведет на экран кнопку в позиции <b>50,50</b> с текстурой из файла <b>button.png</b>,
+определив начальную картинку из текстуры с позиции <b>0,0</b> шириной <b>100</b> и высотой <b>50</b> пикселей,
+располагающуюся перед основным текстом. При нажатии на кнопку осуществится переход на локацию с названием <b>лес</b>.
+</pre>
+<p>Кадры должны идти друг за другом в такой последовательности — нормальная, неактивная (disabled), в фокусе, нажатая.
+</p><p>Если <b>tx</b>, <b>ty</b>, <b>ширина</b> и <b>высота</b> не указаны, то вся текстура просто делится на четыре кадра по горизонтали. Это удобно, но слишком много текстур вредят скорости работы FURQ. Поэтому, если у вас много кнопок, лучше всё-таки разместить их на одну текстуру.
+</p><p>Декоратор-анимация добавляется с помощью типа  <b>ANIMATION</b>&#160;: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) ANIMATION "имя_файла", X, Y, ширина, высота, N</b> 
+</pre>
+<p><b>Х</b> и <b>Y</b> это координаты первого кадра анимации (левый верхний угол). Параметры похожи на параметры типа <b>IMAGE</b>, за исключением того, что здесь параметры, определяющие кадр, опускать нельзя. <b>N</b> определяет количество кадров в анимации. Кадры должны располагаться на картинке один за другим, слева направо и сверху вниз (если они не помещаются на картинке в одну строку). 
+</p>
+<pre><i><b>Пример:</b></i>
+<b>decoradd анимация_героя (50,50, -2) ANIMATION "anime.png", 0, 0, 200, 400, 20</b>
+этот декоратор покажет на экране анимацию из файла текстуры <b>anime.png</b>, в позиции <b>50,50</b> окна, 
+шириной кадра <b>200</b> и высотой <b>400</b>, состоящую из <b>20</b> кадров и располагающуюся перед основным текстом
+</pre>
+<p>Декоратор-GIF можно создать с помощью типа <b>GIF</b>: 
+</p>
+<pre><b>decoradd &lt;имя&gt; (&lt;x&gt;,&lt;y&gt;[, &lt;z&gt;]) GIF "имя_gif-файла"</b> 
+</pre>
+<div style="background-color:LavenderBlush;padding:5px;border:1px solid Brown;"><font color="maroon"><b>Важное замечание:</b></font>  В декораторах типа <b>IMAGE</b> можно использовать gif-изображения, но они будут статичными (первый кадр в анимированных gif-ах). Для анимированных gif-ов используйте декоратор с типом <b>GIF</b>. </div>
+<pre><i><b>Пример:</b></i>
+<b>decoradd гиф_картинка (50,50, -1) GIF "anime.gif"</b>
+этот декоратор покажет анимированную gif картинку из файла <b>anime.gif</b> на экране в позиции <b>50,50</b>, 
+располагающуюся перед основным текстом
+</pre>
+<h3><span id=".D0.A3.D0.BF.D1.80.D0.B0.D0.B2.D0.BB.D0.B5.D0.BD.D0.B8.D0.B5_.D0.B4.D0.B5.D0.BA.D0.BE.D1.80.D0.B0.D1.82.D0.BE.D1.80.D0.B0.D0.BC.D0.B8"></span><span class="mw-headline" id="Управление_декораторами">Управление декораторами</span></h3>
+<p>Для управления декораторами применяются следующие команды: 
+</p>
+<pre><b>decormov  &lt;имя&gt; X, Y[, время]</b>
+</pre>
+<p>Позволяет переместить декоратор в точку с координатами <b>X</b> и <b>Y</b>. Если указано <b>время</b> (в миллисекундах), то перемещение будет плавным и займет как раз указанное время. 
+</p>
+<pre><b>decorcol  &lt;имя&gt; цвет[, время]</b>
+</pre>
+<p>Позволяет установить цвет декоратора. Если указано <b>время</b>, то изменение цвета будет плавным.  Если после имени декоратора задан один параметр — это цвет текста. Если два — это цвет текста и период времени, за который его надо поменять. Если три — это цвет текста, ссылки и подсветки. Если четыре — это три цвета и время, за которое они меняются.
+</p>
+<pre><b>decorrot  &lt;имя&gt; угол[, время]</b>
+</pre>
+<p>Позволяет повернуть декоратор на определенный <b>угол</b> (в градусах). Важно помнить, что угол в этой команде задается <i>относительно текущего</i>. Это позволяет поворачивать декоратор в обе стороны. Если указано <b>время</b>, то поворот будет плавным. Эта команда не работает с декораторами типа <b>TEXT</b>. 
+</p>
+<pre><b>decordel [&lt;имя1&gt;, &lt;имя2&gt;, …]</b>
+</pre>
+<p>Удаляет перечисленные в параметрах декораторы. Без параметров удаляет все декораторы. 
+</p>
+<pre><b>decorscl &lt;имя&gt; масштаб[, время]</b>
+</pre>
+<p>Позволяет установить <b>масштаб</b> декоратора. Масштаб задаётся дробным числом. Масштаб, равный 2 - это двойной размер декоратора, а 0.5 - половинный. Если указано <b>время</b>, то изменение масштаба будет плавным. 
+</p>
+<pre><b>decorscr &lt;имя&gt; "скрипт"</b>
+</pre>
+<p>Назначает декоратору скрипт.
+</p>
+<h3><span id=".D0.9C.D0.B0.D1.81.D0.BA.D0.B8_.D0.B8.D0.BC.D1.91.D0.BD"></span><span class="mw-headline" id="Маски_имён">Маски имён</span></h3>
+<p>Во всех командах управления декораторами в качестве параметра <b>имя</b> можно передавать маску имён с использованием символов <b>*</b> (замещает любое количество символов) и <b>?</b> (замещает один символ). Например, команда
+</p>
+<pre><b>decorrot sas* 90, 2000</b>
+</pre>
+<p>повернёт все декораторы, имя которых начинается с "sas", на 90 градусов по часовой стрелке за две секунды.
+</p>
+<h3><span id=".D0.9F.D0.B5.D1.80.D0.B5.D0.BC.D0.B5.D0.BD.D0.BD.D1.8B.D0.B5_.D0.B4.D0.B5.D0.BA.D0.BE.D1.80.D0.B0.D1.82.D0.BE.D1.80.D0.BE.D0.B2"></span><span class="mw-headline" id="Переменные_декораторов">Переменные декораторов</span></h3>
+<p>Разнообразные параметры декораторов можно устанавливать с помощью специальных переменных. Эти переменные начинаются на decor_ , после чего следует имя декоратора. Переменные бывают следующих типов: 
+</p>
+<ul><li><b>decor_имя_x, decor_имя_y и decor_имя_z</b> – позволяют задать координаты декоратора.</li>
+<li><b>decor_имя_color</b> – позволяет задать цвет декоратора.</li>
+<li><b>decor_имя_linkcolor</b> − позволяет задать цвет ссылок в декораторе.</li>
+<li><b>decor_имя_linkhcolor</b> − позволяет задать цвет подсветки ссылки в декораторе.</li>
+<li><b>decor_имя_hide</b> – если установлен в 1, то декоратор скрыт.</li>
+<li><b>decor_имя_enabled</b> – если установлен в 0, то декоратор-кнопка типа TEXTBUTTON или IMGBUTTON неактивен (нельзя нажать). Для декораторов типа TEXT, если равен 0, отключает все ссылки находящиеся в них.</li>
+<li><b>decor_имя_target</b> - позволяет устанавливать имя "целевой локации", если такая используется в декораторе</li>
+<li><b>decor_имя_text</b> – устанавливает текст декоратора (только для типа <b>TEXT</b>)</li>
+<li><b>decor_имя_align</b> – устанавливает тип выравнивание текста внутри декоратора аналогично переменной <b>textalign</b> (только для типа <b>TEXT</b>), по умолчанию равна 1. Для декоратора типа TEXTBUTTON данная переменная выровняет название кнопки согласно установленному значению.</li>
+<li><b>decor_имя_width</b> – возвращает ширину декоратора (масштабируется по ширине текста в нём), устанавливает ширину текстового декоратора, по которой текст будет переноситься на другую строку (только для типа <b>TEXT</b>). Чтобы вернуться к автомасштабированию, достаточно присвоить переменной decor_имя_width значение ноль. Для декоратора типа TEXTBUTTON данная переменная установит ширину кнопки независимо от ширины текста в ней (по умолчанию ширина кнопки равна ширине текста).</li>
+<li><b>decor_имя_height</b> - возвращает высоту декоратора (в пикселях).</li>
+<li><b>decor_имя_hotx</b> и <b>decor_имя_hoty</b> – позволяют задать «горячую точку» для декоратора (кроме типа <b>TEXT</b>). Горячая точка задается в пространстве самого декоратора (по умолчанию – 0,0) и служит для привязки. Предположим, у вас изображение размером 25х25 пикселей. Если вы установите горячую точку в (13, 13), то, при вращении декоратора, вращение будет происходить вокруг центра картинки. Так же и при позиционировании на экране привязка будет за центр картинки.</li>
+<li><b>decor_имя_flipx</b> и <b>decor_имя_flipy</b> - позволяет задать горизонтальный  и вертикальный флип (зеркальное отображение) для декораторов-картинок. Если переменные равны 1, то картинка отображается зеркально по оси x или y соответственно. Только для декораторов типа IMAGE.</li>
+<li><b>decor_имя_angle</b> – позволяет задать угол поворота декоратора (кроме типа <b>TEXT</b>). Угол задается в градусах.</li>
+<li><b>decor_имя_rotspeed</b> – позволяет задать постоянную скорость вращения декоратора (кроме типа <b>TEXT</b>). Скорость задается в градусах в секунду и может иметь как положительное, так и отрицательное значение.</li>
+<li><b>decor_имя_scale</b> – позволяет задать масштаб декоратора (кроме типа <b>TEXT</b>). По умолчанию равна 1.</li>
+<li><b>decor_имя_frame</b> – позволяет задать текущий кадр анимации (только для типов <b>ANIMATION</b> и <b>GIF</b>). Процесс анимации при этом останавливается.</li>
+<li><b>decor_имя_anispeed</b> – позволяет задать скорость анимации (только для типов <b>ANIMATION</b> и <b>GIF</b>). Для разных типов поведение различается:
+<ul><li>Для типа <b>ANIMATION</b> . Если анимация остановлена, то равна 0. Обозначает задержку в миллисекундах между сменой кадров. Может принимать как положительное, так и отрицательное значение. По умолчанию имеет значение 250;</li>
+<li>Для типа <b>GIF</b> . Если анимация остановлена, то равна 0. Обозначает процент от скорости, записанной в самом GIF-файле. Может принимать  значения от 0 до 1000. По умолчанию имеет значение 100.</li></ul></li>
+<li><b>decor_имя_anitype</b> – позволяет задать тип анимации (только для типа <b>ANIMATION</b>). Может принимать следующие значения:
+<ul><li><b>0</b> – анимация проигрывается один раз и останавливается;</li>
+<li><b>1</b> – анимация зациклена (с последнего кадра перескакивает обратно на первый);</li>
+<li><b>2</b> – анимация зациклена в режиме «пинг-понг» (при достижении граничного кадра меняется направление анимации).</li></ul></li>
+<li><b>decor_имя_script</b> – позволяет задать скрипт декоратора. Прочитать значение переменной скрипта нельзя, его можно только назначить.</li>
+<li><b>decor_name_linespacing</b> - вертикальное расстояние между строк текста (только для <b>TEXT</b>). По умолчанию равно системному <b>linespacing</b>.</li>
+<li><b>decor_name_paraspacing</b> - вертикальное расстояние между параграфами (только для <b>TEXT</b>). По умолчанию равно системному <b>paraspacing</b>.</li></ul>
+<h3><span id=".D0.A1.D0.BA.D1.80.D0.B8.D0.BF.D1.82.D1.8B_.D0.B4.D0.B5.D0.BA.D0.BE.D1.80.D0.B0.D1.82.D0.BE.D1.80.D0.BE.D0.B2"></span><span class="mw-headline" id="Скрипты_декораторов">Скрипты декораторов</span></h3>
+<p>Скрипты позволяют "запрограммировать" декоратор. Другими словами, назначить ему последовательность команд по перемещению, вращению, изменению масштаба и т.д., которые декоратор будет выполнять самостоятельно, не требуя дополнительных команд в коде игры. Эта функция удобна, когда вам надо реализовать системы частиц (снежинки, дым) для оформления вашей игры, или просто добавить визуальных эффектов. 
+</p><p>Скрипты декораторам назначаются с помощью команды <b>decorscr</b> или переменной <b>decor_имя_script</b> и представляют собой строку, содержащую последовательность команд, разделённых символом косой черты (<b>/</b>). 
+</p><p><br />
+<i><b>Команды</b></i> 
+</p><p><b>mov x, y [, time]</b> - перемещение в точку <b>x</b>, <b>y</b> (опционально - за время <b>time</b>) 
+</p><p><b>mvr</b>  - то же самое, но координаты задаются относительные
+</p><p><b>movx</b> и <b>mvrx</b> - то же самое, но следующая команда выполнится немедленно (не будет паузы на время <b>time</b>) 
+</p><p><b>pau <time></time></b> - пауза на время <b>time</b> 
+</p><p><b>col &lt;цвет&gt;[, time]</b> - изменение цвета декоратора (опционально - за время <b>time</b>)
+</p><p><b>col &lt;A, R, G, B&gt;[, time]</b> - то же самое, но компоненты цвета задаются отдельными параметрами
+</p><p><b>colx</b> - то же самое, но следующая команда выполнится немедленно (не будет паузы на время <b>time</b>) 
+</p><p>Для команд col/colx, как и для <b>decorcol</b>, если задан один параметр — это цвет текста. Если два — это цвет текста и период времени, за который его надо поменять. Если три — это цвет текста, ссылки и подсветки. Если четыре — это три цвета и время, за которое они меняются. 
+</p><p><b>ang &lt;угол&gt;</b> - задать абсолютный угол поворота декоратора (в градусах) 
+</p><p><b>rot &lt;угол&gt;[, time]</b> - поворот декоратора на угол (относительное значение, опционально - за время <b>time</b>)
+</p><p><b>rotx</b> - без паузы 
+</p><p><b>rsp &lt;скорость вращения&gt;</b> - позволяет задать скорость вращения (положительную или отрицательную, в углах в секунду) 
+</p><p><b>scl &lt;масштаб&gt;[, time]</b> - задать масштаб декоратора (опционально - за время <b>time</b>)
+</p><p><b>sclx</b> - то же самое без паузы 
+</p><p><b>rst</b> - запустить скрипт с начала 
+</p><p><b>del</b> - уничтожить декоратор 
+</p><p><br />
+<i><b>Случайные параметры</b></i> 
+</p><p>Любой из параметров можно определить как <b>R(min,max)</b>, таким образом, при исполнении команды будет вычислено случайное значение от <b>min</b> до <b>max</b>. 
+</p><p><br />
+<i><b>Пример</b></i>
+</p>
+<pre><b>decorscr star "mvr 50, 0, 1000/rot R(-90,90), 1500/rst"</b>
+</pre>
+<p>Декоратор с именем <b>star</b> переместится вправо на 50 пикселей за одну секунду, затем повернётся на случайный угол от -90 до 90 градусов (т.е. вправо или влево) за полторы секунды и начнёт выполнять скрипт сначала, то есть будет продолжать двигаться вправо и поворачиваться, уезжая за правую границу экрана.
+</p>
+<h2><span id=".D0.A1.D0.BA.D0.B8.D0.BD.D1.8B"></span><span class="mw-headline" id="Скины">Скины</span></h2>
+<p>Скин игры - это файл с описанием того, как должен выглядеть интерпретатор FireURQ при проигрывании вашего квеста. Изменение внешнего вида интерпретатора - это тема повышенной сложности, поэтом она раскрыта в <a href="/FireURQ:%D0%A1%D0%BA%D0%B8%D0%BD%D1%8B" title="FireURQ:Скины">отдельном разделе</a>.
+</p>
+<h2><span id=".D0.A4.D0.BE.D1.80.D0.BC.D0.B0.D1.82_.D0.BA.D0.B2.D0.B5.D1.81.D1.82.D0.BE.D0.B2_QSZ"></span><span class="mw-headline" id="Формат_квестов_QSZ">Формат квестов QSZ</span></h2>
+<p><b>FireURQ</b> поддерживает свой собственный формат квеста – упакованный квест (<b>QST Zipped</b>). <b>QSZ</b>-файл – это, по сути, zip-архив, в котором лежит сам файл квеста (<b>qst</b>, <b>qs1</b> или <b>qs2</b>)  и все ресурсы, необходимые для работы игры (изображения и музыка).  Данный формат очень удобен, если ваша игра использует мультимедиа.
+</p><p>Также, в старых версиях <b>FireURQ</b> (до версии 2.0) существовала возможность конвертации квеста в формате QSZ в исполняемый файл с помощью утилиты <b>QSZ2EXE</b>, входившей в комплект поставки. 
+</p>
+<h2><span id=".D0.A0.D0.B5.D0.B6.D0.B8.D0.BC_.D0.BE.D1.82.D0.BB.D0.B0.D0.B4.D0.BA.D0.B8"></span><span class="mw-headline" id="Режим_отладки">Режим отладки</span></h2>
+<p>Режим отладки включается с помощью ключа <b>-d</b> в командной строке. При включенном режиме отладки все ошибки в коде квеста выводятся прямо в текст. Кроме того, в режиме отладки работает полезная комбинация <b>Ctrl+R</b>, позволяющая перезагрузить исходный текст квеста с диска. Происходит сохранение игры, перезагрузка исходного текста и загрузка сохраненного состояния с переходом на ту же локацию, что и до перезагрузки. Это позволяет править исходный текст и сразу же смотреть результаты изменений.
+</p>
+<h2><span id=".D0.98.D0.BD.D0.B2.D0.B5.D0.BD.D1.82.D0.B0.D1.80.D1.8C"></span><span class="mw-headline" id="Инвентарь">Инвентарь</span></h2>
+<p>Существует возможность скрывать действия над предметами. Для этого необходимо использовать специальные переменные. Имя переменной формируется как имя локации-действия над предметом инвентаря, плюс «<b>_hide</b>». Например, если выполнить <b>Use_Топор_Рубить дерево_hide = 1</b>, то действие “Рубить дерево» у предмета инвентаря «Топор» будет скрыто до тех пор, пока вы не присвоите этой же переменной значение <b>0</b>.
+</p><p>С помощью такого приема можно скрывать действия над предметами на тех локациях, на которых их по сюжету невозможно выполнить.
+</p><p>Также возможно поменять отображение предмета в списке инвентаря. Для этого используются переменные вида <b>idisp_предмет</b>, например:
+</p>
+<pre><b>idisp_Бутылка = "Бутылка с водой"</b>
+</pre>
+<p>При этом важно понимать, что <b>idisp_-переменные</b> влияют только на отображение предмета в списке инвентаря. В операторах <b>inv+</b> и <b>inv-</b>, а также при обращении к счетчикам предметов через <b>inv_-переменные</b>, следует использовать изначальное название («Бутылка» в примере):
+</p>
+<pre><b>inv- Бутылка</b>
+<b>if inv_Бутылка &gt; 1 then pln У вас несколько бутылок…</b>
+</pre>
+<h2><span id=".D0.9F.D1.80.D0.B5.D0.B4.D0.BE.D0.BF.D1.80.D0.B5.D0.B4.D0.B5.D0.BB.D0.B5.D0.BD.D0.BD.D1.8B.D0.B5_.D1.84.D1.83.D0.BD.D0.BA.D1.86.D0.B8.D0.B8"></span><span class="mw-headline" id="Предопределенные_функции">Предопределенные функции</span></h2>
+<p>В <b>FireURQ</b> предусмотрены предопределенные функции, которые вызываются с помощью оператора proc. Результат возвращается в переменной <b>_result</b>. Существуют следующие предопределенные функции:
+</p><p>Функция <b>_int</b> отбрасывает дробную часть числа. Если вызвать, например, proc _int(3.14), то в переменной _result окажется 3.
+</p><p>Функция <b>_trim</b> обрезает пробелы с начала и в конце строки, вызывается как proc _trim(str), где str — строка (строковая переменная или строка в кавычках).
+</p><p>Функция <b>_scopy</b> копирует кусочек строки, вызывается как proc _scopy(str, start[, len]), где str — строка, start — номер символа в строке, с которого начинать копировать и len — количество копируемых символов. Если параметр len опущен, то строка копируется до конца.
+</p><p><b>_sin(x)</b>, <b>_cos(x)</b> и <b>_tan(x)</b> – позволяют вычислить соответственно синус, косинус и тангенс числа x, представленного в радианах.
+<b>_arcsin</b>, <b>_arccos</b>, <b>_arctan</b> и <b>_sqrt</b> - вычисляют арксинус, арккосинус, арктангенс и извлечение квадратного корня
+</p><p><b>_power(w, n)</b> - вычисление степени числа. Здесь два параметра — основа и значение степени. Если оставить только x, он будет возведён в квадрат. Также, вспомнив школьный курс алгебры, с помощью <b>_power</b> можно извлекать корни любой степени.
+</p><p><b>_color([a,] r, g, b)</b> – позволяет получить значение цвета из его составляющих. Если составляющая прозрачности (<b>a</b>) не указана, то она принимается равной <b>255</b>(т.е. полностью видимый цвет). 
+</p><p><br />
+<i><b>Пример:</b></i>
+</p>
+<pre><b>proc _color(x+15, 10, 255, 60)</b>
+<b>textcolor = _result</b>
+</pre>
+<h2><span class="mw-headline" id="Anykey">Anykey</span></h2>
+<pre><b>anykey [&lt;переменная&gt;[, &lt;pause&gt;]]</b>
+</pre>
+<p>По команде <b>anykey</b> игра приостанавливается и ждёт нажатия на клавишу. Если указана переменная, то код клавиши будет записан в неё. При нажатии на функциональную клавишу в <b>anykey</b> возвращается скан-код этой клавиши, а переменная <b>is_syskey</b> устанавливается в <b>1</b>. Состояние клавиш <b>Shift</b>, <b>Ctrl</b> и <b>Alt</b> на скан-коде функциональной клавиши не отражаются.
+</p><p>Также, у команды <b>anykey</b> существует возможность задавать таймаут. Например, по команде <b>anykey z, 1000</b> игра секунду будет ожидать нажатия кнопки, а если за секунду кнопка нажата не будет, то игра продолжит выполнение, а в переменную <b>z</b> будет записан ноль. 
+</p><p>При использовании команды <b>anykey</b> нажатия на кнопку мыши тоже расцениваются как нажатия на клавишу, при этом в переданную переменную записываются коды <b>256</b>, <b>257</b> и <b>258</b> для левой, правой и средней кнопок соответственно, а в переменные <b>mouse_x</b> и <b>mouse_y</b> – координаты, в которых был сделан клик.
+</p><p><i><b>Пример:</b></i>
+</p>
+<pre><b>anykey z, 1000</b>
+</pre>
+<h2><span class="mw-headline" id="Time">Time</span></h2>
+<p>С версии 2.0 появилась переменная <b>time</b>, которая хранит в себе количество миллисекунд, прошедших с момента загрузки Windows. Это удобно, если надо засечь время реакции игрока.
+</p>
+<h2><span class="mw-headline" id="Mousecursor">Mousecursor</span></h2>
+<p>С версии 2.0 появилась возможность кастомизировать курсор. Им теперь может служить любой декоратор. Достаточно присвоить имя этого декоратора переменной <b>mousecursor</b>. При этом точка привязки декоратора становится точкой указания для мыши. Чтобы вернуться к системному курсору, нужно присвоить переменной <b>mousecursor</b> пустое значение. При этом декоратор тоже нужно уничтожить, иначе он останется на экране.
+</p><p><i><b>Пример:</b></i>
+</p>
+<pre><b>decoradd cursor (0,0, 50) IMAGE "arrow.png"</b>
+<b>mousecursor = "cursor"</b>
+</pre>
+<h2><span id=".D0.A1.D0.BE.D1.85.D1.80.D0.B0.D0.BD.D0.B5.D0.BD.D0.B8.D0.B5_.D0.B8.D0.B3.D1.80.D1.8B_.D0.B8_.D0.BE.D0.BF.D0.B5.D1.80.D0.B0.D1.82.D0.BE.D1.80_SAVE"></span><span class="mw-headline" id="Сохранение_игры_и_оператор_SAVE">Сохранение игры и оператор SAVE</span></h2>
+<p>В <b>FURQ</b> предусмотрено сохранение состояния игры в слоты (<b>7</b> обычных слотов и  слот “автосохранения”). 
+</p><p><b>save &lt;локация&gt;</b> - записывает сохранение в слот автосохранения.
+</p><p><b>save &lt;локация&gt;, "имя сохранения"</b> - запускает интерфейс со слотами, дает выбрать слот сохранения (кроме слота “автосейва”) и записывает в него сохранение с указанным именем.
+</p><p><b>save &lt;локация&gt;, "имя сохранения", &lt;номер слота&gt;</b> - запишет сохранение в указанный слот, где номер слота - число от <b>0</b> до <b>7</b> (<b>0</b> - слот автосохранения).
+</p><p><i><b>Пример:</b></i>
+</p>
+<pre><b>save location; записать в слот автосохранения</b>
+<b>save location, “Сохранение”; записать в любой слот, который выберет игрок</b>
+<b>save location, “Мой автосейв”, 0; записать в слот автосохранения</b>
+<b>save location, “Утро, Румыния, 17-й век”, 5; записать в пятый слот</b>
+</pre>
+<p>Загрузка сохранения происходит путем выбора пункта меню <b>"Загрузить сохранённую игру"</b>. При этом если есть только автосейв - он загружается сразу, если же кроме автосейва занят какой-нибудь слот - выдается интерфейс выбора из слотов.
+</p><p>С версии 2.0 <b>FURQ</b> сохраняет полное состояние игры на момент сохранения и способна вернуться в ту точку кода, где была вызвана команда SAVE. То есть, после загрузки, выполнение продолжится с команды, следующей за командой SAVE. Чтобы воспользоваться новыми возможностями, просто не указывайте первый параметр (локацию) при вызове SAVE. Например:
+</p><p><i><b>Пример:</b></i>
+</p>
+<pre> <b>save «В лесу»</b> ;вызовет интерфейс сохранения с выбором слота
+ <b>save «В лесу», 2</b> ;запишет сохранение во второй слот
+ <b>save</b> ;просто сохранит игру в нулевой слот без вызова интерфейса
+</pre>
+<p>Если же в команде будет указана локация сохранения, то после загрузки произойдёт переход на указанную локацию.
+</p><p>При сохранении игры командой SAVE переменная <b>save_success</b> устанавливается в 1 при успешном сохранении и в 0, если сохранение по каким-то причинам не удалось.
+</p><p>Так же с версии 2.2 в FireURQ появилась возможность менять базовое имя файла сейва. 
+Переменная <b>savenamebase</b> хранит это имя. По умолчанию переменная содержит название файла игры. 
+Если значение поменять на <b>«profile1»</b>, то файлы сохранений будут называться <b>profile1.s01</b>, <b>profile1.s02</b> и т.д.
+</p>
+<h2><span id=".D0.97.D0.B0.D0.B3.D1.80.D1.83.D0.B7.D0.BA.D0.B0_.D0.B8.D0.B3.D1.80.D1.8B_.D1.87.D0.B5.D1.80.D0.B5.D0.B7_.D0.BE.D0.BF.D0.B5.D1.80.D0.B0.D1.82.D0.BE.D1.80_LOAD"></span><span class="mw-headline" id="Загрузка_игры_через_оператор_LOAD">Загрузка игры через оператор LOAD</span></h2>
+<p>Оператор LOAD инициирует загрузку ранее сохранённой игры. Команда дублирует пункт меню «Загрузить сохранение».
+Если использовались слоты сохранений, то данная команда вызовет интерфейс выбора из слотов. Если же сохранение было системным, то просто загрузит игру.
+</p><p>C версии <b>FireURQ 2.2</b> появилась возможность загружать сохранения непосредственно из слотов, не вызывая меню "Загрузить сохранение".
+</p><p>Если написать <b>LOAD 1</b>, то будет загружено сохранение из первого слота. <b>LOAD 0</b> загрузит игру из слота автосохранения.
+</p>
+<h2><span id=".D0.9F.D0.B5.D1.80.D0.BC.D0.B0.D0.BD.D0.B5.D0.BD.D1.82.D0.BD.D0.BE.D0.B5_.D1.85.D1.80.D0.B0.D0.BD.D0.B8.D0.BB.D0.B8.D1.89.D0.B5_.D0.B4.D0.B0.D0.BD.D0.BD.D1.8B.D1.85"></span><span class="mw-headline" id="Перманентное_хранилище_данных">Перманентное хранилище данных</span></h2>
+<p>Начиная с версии 2.2 FireURQ обзавелась перманентным хранилищем данных. 
+Это переменные, которые не удаляются при <b>perkill</b> или перезапуске игры, автоматически подгружаются и, при их изменении, так же автоматически сохраняются в специальном файле. 
+</p><p>Любая переменная, начинающаяся на <b>gss_</b> будет считаться перманентной. 
+</p><p>Это позволит хранить глобальные настройки, которые не должны изменяться при перезапуске игры, а так же делать достижения и даже переносить параметры из игры в игру.
+</p><p>Команда <b>gsskill</b> полностью очищает хранилище.
+</p>
+<h2><span id=".D0.94.D1.80.D1.83.D0.B3.D0.BE.D0.B5"></span><span class="mw-headline" id="Другое">Другое</span></h2>
+<ul><li><b>count_...</b> — переменные счетчики обновляются ТОЛЬКО при переходах по <b>btn</b>. Старое поведение <b>URQ_DOS</b>, когда <b>count_...</b> увеличивается и по <b>proc</b> и по <b>goto</b>, можно включить, установив переменную dosurq_count в <b>1</b>.</li>
+<li>Переход по действиям в инвентаре не перезапускает локацию заново при возврате. Если действие было вызвано во время <b>end</b> — то происходит безусловный переход (<b>goto</b>) на локацию-действие. Если же вы решили использовать инвентарь во время pause, то локация-действие вызывается как <b>proc</b> с возвратом на оператор, следующий за pause. Долго думал над этим поведением и решил, что так будет правильнее всего.</li>
+<li>Есть переменная <b>gametitle</b> — позволяет вывести название игры в заголовок окна. По умолчанию там имя файла, из которого игра была загружена.</li>
+<li>Ключ <b>-l</b> командной строки позволяет направить весь вывод в файл, т.е. создавать логи прохождений. Файлы логов будут называться <b>имяквеста.000.log</b>, <b>имяквеста.001.log</b> и т.д.</li>
+<li>Клавиатурные шорткаты для системного меню и инвентаря – клавиши [<b>Esc</b>] и [<b>I</b>], соответственно.</li>
+<li>Имеется возможность включить полноэкранный режим, нажав сочетание клавиш <b>Alt+Enter</b>. Повторное нажатие Alt+Enter выключает полноэкранный режим.</li>
+<li>Можно прокручивать экран с помощью клавиш <b>PgUp</b> и <b>PgDown</b>, а также колесом мыши. Если держать <b>Ctrl</b>, то колесо мыши прокручивает экран маленькими порциями.</li>
+<li>В оператор <b>tokens</b> можно передавать не только строковую переменную, но и просто строку, заключенную в кавычки или строковое выражение.</li>
+<li>Индикацию состояний ожидания (мигающая иконка в углу экрана) при выполнении операторов anykey, pause и при требуемой прокрутке текста можно отменить с помощью переменных <b>hide_anykey_indicator</b>, <b>hide_pause_indicator</b> и <b>hide_more_indicator</b>, присвоив им значение <b>1</b>.</li>
+<li>Есть возможность изменять положение и размер главного текстового поля. Для этого служат переменные <b>textpane_left</b>, <b>textpane_top</b>, <b>textpane_width</b> и <b>textpane_height</b>.</li>
+<li>Скрыть «эхо» выполняемых действий при нажатии кнопки, использовании инвентаря и сохранении игры возможно с помощью переменных <b>hide_btn_echo</b>, <b>hide_inv_echo</b> и <b>hide_save_echo</b>, соответственно, установив их в <b>1</b>.</li>
+<li>Переменная <b>hide_link_echo</b> скрывает «эхо» от ссылок, если её установить в <b>1</b>.</li>
+<li>Переменная <b>hide_local_echo</b> скывает «эхо» от локальных действий, если её установить в <b>1</b>. По умолчанию равна <b>1</b>.</li>
+<li>При сохранении игры командой <b>SAVE</b> переменная <b>save_success</b> устанавливается в <b>1</b> при успешном сохранении и в <b>0</b>, если сохранение по каким-то причинам не удалось.</li>
+<li>Если установить переменную <b>numbuttons</b> в <b>1</b>, то кнопки действий будут пронумерованы, а нажатие цифровых клавиш на клавиатуре будет приводить к нажатию соответствующей кнопки.</li>
+<li>Переменные <b>mouse_x</b> и <b>mouse_y</b> возвращают текущие координаты мыши на момент вызова.</li>
+<li>При нажатии <b>Ctrl+C</b> в буфер обмена будет помещён текст последней локации.</li>
+<li>Команда <b>CLSL</b> делает неактивными все ссылки в тексте.</li>
+<li>Переменная <b>inventory_enabled</b> (по умолчанию <b>1</b>) отвечает за доступность инвентаря, при значении <b>0</b> инвентарь недоступен и наоборот.</li>
+<li>Переменная <b>fp_filename</b> содержит имя файла, с которым работают команды <b>fp</b>, <b>fpln</b> и <b>newfile</b>.</li>
+<li>Команда <b>QUIT</b> закрывает плеер с игрой.</li>
+<li>Системная переменная <b>fullscreen</b> отвечает за развёртывание игры на полный экран и возврат в оконный режим. Установка её в 1 переводит игру в полноэкранный режим, 0 - переводит обратно в оконный.</li>
+<li>Переменная <b>altenter_disable</b> (по умолчанию <b>0</b>) отвечает за то, что по комбинации клавиш <b>Alt + Enter</b> окно игры будет открываться на весь экран или становиться снова окном. Для отключения реакции на эту комбинацию клавиш, следует установить переменную в <b>1</b>.</li>
+<li>Переменная <b>escape_disable</b> (по умолчанию <b>0</b>) отвечает за показ системного меню по нажатию клавиши <b>Esc</b>. Для отключения реакции на эту клавишу, следует установить переменную в <b>1</b>.</li></ul>
+<!-- 
+NewPP limit report
+Cached time: 20260303062550
+Cache expiry: 86400
+Reduced expiry: false
+Complications: [show‐toc]
+[SMW] In‐text annotation parser time: 0.001 seconds
+CPU time usage: 0.032 seconds
+Real time usage: 0.033 seconds
+Preprocessor visited node count: 150/1000000
+Post‐expand include size: 0/2097152 bytes
+Template argument size: 0/2097152 bytes
+Highest expansion depth: 2/100
+Expensive parser function count: 0/100
+Unstrip recursion depth: 0/20
+Unstrip post‐expand size: 146/5000000 bytes
+ExtLoops count: 0/100
+-->
+<!--
+Transclusion expansion time report (%,ms,calls,template)
+100.00%    0.000      1 -total
+-->
+
+<!-- Saved in parser cache with key ifwiki:pcache:idhash:2681-0!canonical and timestamp 20260303062550 and revision id 28810. Rendering was triggered because: diff-page
+ -->
+</div>
+<div class="printfooter" data-nosnippet="">Источник — <a dir="ltr" href="https://ifwiki.ru/index.php?title=FireURQ:Особенности_реализации_URQL&amp;oldid=28810">https://ifwiki.ru/index.php?title=FireURQ:Особенности_реализации_URQL&amp;oldid=28810</a></div></div>
+		<div id="catlinks" class="catlinks" data-mw="interface"><div id="mw-normal-catlinks" class="mw-normal-catlinks"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D0%B8" title="Служебная:Категории">Категория</a>: <ul><li><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%94%D0%BE%D0%BA%D1%83%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%86%D0%B8%D1%8F_FireURQ" title="Категория:Документация FireURQ">Документация FireURQ</a></li></ul></div></div>
+	</div>
+</div>
+
+<div id="mw-navigation">
+	<h2>Навигация</h2>
+	<div id="mw-head">
+		
+<nav id="p-personal" class="mw-portlet mw-portlet-personal vector-user-menu-legacy vector-menu" aria-labelledby="p-personal-label"  >
+	<h3
+		id="p-personal-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">Персональные инструменты</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="pt-createaccount" class="mw-list-item"><a href="/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BE%D0%B7%D0%B4%D0%B0%D1%82%D1%8C_%D1%83%D1%87%D1%91%D1%82%D0%BD%D1%83%D1%8E_%D0%B7%D0%B0%D0%BF%D0%B8%D1%81%D1%8C&amp;returnto=FireURQ%3A%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8+%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8+URQL" title="Мы предлагаем вам создать учётную запись и войти в систему, хотя это и не обязательно."><span>Создать учётную запись</span></a></li><li id="pt-login" class="mw-list-item"><a href="/index.php?title=%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%92%D1%85%D0%BE%D0%B4&amp;returnto=FireURQ%3A%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8+%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8+URQL" title="Здесь можно зарегистрироваться в системе, но это необязательно. [o]" accesskey="o"><span>Войти</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+		<div id="left-navigation">
+			
+<nav id="p-namespaces" class="mw-portlet mw-portlet-namespaces vector-menu-tabs vector-menu-tabs-legacy vector-menu" aria-labelledby="p-namespaces-label"  >
+	<h3
+		id="p-namespaces-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">Пространства имён</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="ca-nstab-main" class="selected mw-list-item"><a href="/FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL" title="Просмотреть контентную страницу [c]" accesskey="c"><span>Статья</span></a></li><li id="ca-talk" class="new mw-list-item"><a href="/index.php?title=%D0%9E%D0%B1%D1%81%D1%83%D0%B6%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5:FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;action=edit&amp;redlink=1" rel="discussion" class="new" title="Обсуждение основной страницы (страница не существует) [t]" accesskey="t"><span>Обсуждение</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<nav id="p-variants" class="mw-portlet mw-portlet-variants emptyPortlet vector-menu-dropdown vector-menu" aria-labelledby="p-variants-label"  >
+	<input type="checkbox"
+		id="p-variants-checkbox"
+		role="button"
+		aria-haspopup="true"
+		data-event-name="ui.dropdown-p-variants"
+		class="vector-menu-checkbox"
+		aria-labelledby="p-variants-label"
+	>
+	<label
+		id="p-variants-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">русский</span>
+	</label>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			
+		</ul>
+		
+	</div>
+</nav>
+
+		</div>
+		<div id="right-navigation">
+			
+<nav id="p-views" class="mw-portlet mw-portlet-views vector-menu-tabs vector-menu-tabs-legacy vector-menu" aria-labelledby="p-views-label"  >
+	<h3
+		id="p-views-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">Просмотры</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="ca-view" class="selected mw-list-item"><a href="/FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL"><span>Читать</span></a></li><li id="ca-viewsource" class="mw-list-item"><a href="/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;action=edit" title="Эта страница защищена от изменений.&#10;Вы можете посмотреть её исходный текст. [e]" accesskey="e"><span>Просмотр кода</span></a></li><li id="ca-history" class="mw-list-item"><a href="/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;action=history" title="Журнал изменений страницы [h]" accesskey="h"><span>История</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<nav id="p-cactions" class="mw-portlet mw-portlet-cactions vector-menu-dropdown vector-menu" aria-labelledby="p-cactions-label"  title="Больше возможностей" >
+	<input type="checkbox"
+		id="p-cactions-checkbox"
+		role="button"
+		aria-haspopup="true"
+		data-event-name="ui.dropdown-p-cactions"
+		class="vector-menu-checkbox"
+		aria-labelledby="p-cactions-label"
+	>
+	<label
+		id="p-cactions-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">Ещё</span>
+	</label>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="ca-purge" class="is-disabled mw-list-item"><a href="/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;action=purge"><span>Обновить</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+			
+<div id="p-search" role="search" class="vector-search-box-vue  vector-search-box-show-thumbnail vector-search-box-auto-expand-width vector-search-box">
+	<h3 >Поиск</h3>
+	<form action="/index.php" id="searchform" class="vector-search-box-form">
+		<div id="simpleSearch"
+			class="vector-search-box-inner"
+			 data-search-loc="header-navigation">
+			<input class="vector-search-box-input"
+				 type="search" name="search" placeholder="Искать в IFВики" aria-label="Искать в IFВики" autocapitalize="sentences" title="Искать в IFВики [f]" accesskey="f" id="searchInput"
+			>
+			<input type="hidden" name="title" value="Служебная:Поиск">
+			<input id="mw-searchButton"
+				 class="searchButton mw-fallbackSearchButton" type="submit" name="fulltext" title="Найти страницы, содержащие указанный текст" value="Найти">
+			<input id="searchButton"
+				 class="searchButton" type="submit" name="go" title="Перейти к странице, имеющей в точности такое название" value="Перейти">
+		</div>
+	</form>
+</div>
+
+		</div>
+	</div>
+	
+<div id="mw-panel" class="vector-legacy-sidebar">
+	<div id="p-logo" role="banner">
+		<a class="mw-wiki-logo" href="/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0"
+			title="Перейти на заглавную страницу"></a>
+	</div>
+	
+<nav id="p-темы" class="mw-portlet mw-portlet-темы vector-menu-portal portal vector-menu" aria-labelledby="p-темы-label"  >
+	<h3
+		id="p-темы-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">темы</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="n-Основы" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D1%8B"><span>Основы</span></a></li><li id="n-Игры" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%98%D0%B3%D1%80%D1%8B"><span>Игры</span></a></li><li id="n-Платформы" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9F%D0%BB%D0%B0%D1%82%D1%84%D0%BE%D1%80%D0%BC%D1%8B"><span>Платформы</span></a></li><li id="n-Персоналии" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%BB%D0%B8%D0%B8"><span>Персоналии</span></a></li><li id="n-Конкурсы" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9A%D0%BE%D0%BD%D0%BA%D1%83%D1%80%D1%81%D1%8B"><span>Конкурсы</span></a></li><li id="n-Статьи" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%A1%D1%82%D0%B0%D1%82%D1%8C%D0%B8"><span>Статьи</span></a></li><li id="n-Календарь" class="mw-list-item"><a href="/%D0%9A%D0%B0%D1%82%D0%B5%D0%B3%D0%BE%D1%80%D0%B8%D1%8F:%D0%9A%D0%B0%D0%BB%D0%B5%D0%BD%D0%B4%D0%B0%D1%80%D1%8C"><span>Календарь</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+	
+<nav id="p-навигация" class="mw-portlet mw-portlet-навигация vector-menu-portal portal vector-menu" aria-labelledby="p-навигация-label"  >
+	<h3
+		id="p-навигация-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">навигация</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="n-mainpage" class="mw-list-item"><a href="/%D0%97%D0%B0%D0%B3%D0%BB%D0%B0%D0%B2%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" title="Перейти на заглавную страницу [z]" accesskey="z"><span>Заглавная страница</span></a></li><li id="n-portal" class="mw-list-item"><a href="/IF%D0%92%D0%B8%D0%BA%D0%B8:%D0%9F%D0%BE%D1%80%D1%82%D0%B0%D0%BB_%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D1%81%D1%82%D0%B2%D0%B0" title="О проекте, о том, чем здесь можно заниматься, а также — где что находится"><span>Портал сообщества</span></a></li><li id="n-chosengames" class="mw-list-item"><a href="/%D0%98%D0%B7%D0%B1%D1%80%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%B8%D0%B3%D1%80%D1%8B"><span>Избранные игры</span></a></li><li id="n-recentchanges" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D0%B5%D0%B6%D0%B8%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8" title="Список последних изменений [r]" accesskey="r"><span>Свежие правки</span></a></li><li id="n-randompage" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BB%D1%83%D1%87%D0%B0%D0%B9%D0%BD%D0%B0%D1%8F_%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D0%B0" title="Посмотреть случайно выбранную страницу [x]" accesskey="x"><span>Случайная страница</span></a></li><li id="n-Случайная-игра" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:RandomInCategory/%D0%98%D0%B3%D1%80%D1%8B"><span>Случайная игра</span></a></li><li id="n-help" class="mw-list-item"><a href="http://ifwiki.ru/%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0:%D0%A1%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B0" rel="nofollow" title="Место расположения Справки"><span>Справка</span></a></li><li id="n-Поддержать" class="mw-list-item"><a href="/IF%D0%92%D0%B8%D0%BA%D0%B8:%D0%9F%D0%BE%D0%B6%D0%B5%D1%80%D1%82%D0%B2%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F"><span>Поддержать</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+<nav id="p-tb" class="mw-portlet mw-portlet-tb vector-menu-portal portal vector-menu" aria-labelledby="p-tb-label"  >
+	<h3
+		id="p-tb-label"
+		
+		class="vector-menu-heading "
+	>
+		<span class="vector-menu-heading-label">Инструменты</span>
+	</h3>
+	<div class="vector-menu-content">
+		
+		<ul class="vector-menu-content-list">
+			
+			<li id="t-whatlinkshere" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D1%81%D1%8B%D0%BB%D0%BA%D0%B8_%D1%81%D1%8E%D0%B4%D0%B0/FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL" title="Список всех страниц, ссылающихся на данную [j]" accesskey="j"><span>Ссылки сюда</span></a></li><li id="t-recentchangeslinked" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%B2%D1%8F%D0%B7%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%BF%D1%80%D0%B0%D0%B2%D0%BA%D0%B8/FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL" rel="nofollow" title="Последние изменения в страницах, на которые ссылается эта страница [k]" accesskey="k"><span>Связанные правки</span></a></li><li id="t-specialpages" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:%D0%A1%D0%BF%D0%B5%D1%86%D1%81%D1%82%D1%80%D0%B0%D0%BD%D0%B8%D1%86%D1%8B" title="Список служебных страниц [q]" accesskey="q"><span>Служебные страницы</span></a></li><li id="t-print" class="mw-list-item"><a href="javascript:print();" rel="alternate" title="Версия этой страницы для печати [p]" accesskey="p"><span>Версия для печати</span></a></li><li id="t-permalink" class="mw-list-item"><a href="/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;oldid=28810" title="Постоянная ссылка на эту версию страницы"><span>Постоянная ссылка</span></a></li><li id="t-info" class="mw-list-item"><a href="/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;action=info" title="Подробнее об этой странице"><span>Сведения о странице</span></a></li><li id="t-smwbrowselink" class="mw-list-item"><a href="/%D0%A1%D0%BB%D1%83%D0%B6%D0%B5%D0%B1%D0%BD%D0%B0%D1%8F:Browse/:FireURQ:Особенности-5Fреализации-5FURQL" rel="search"><span>Узнать свойства</span></a></li>
+		</ul>
+		
+	</div>
+</nav>
+
+	
+</div>
+
+</div>
+
+<footer id="footer" class="mw-footer" >
+	<ul id="footer-info">
+	<li id="footer-info-lastmod"> Эта страница в последний раз была отредактирована 3 марта 2026 в 06:25.</li>
+	<li id="footer-info-copyright">Содержание доступно по лицензии <a class="external" rel="nofollow" href="https://creativecommons.org/licenses/by-nc/3.0/">Attribution-Noncommercial 3.0 Unported</a> (если не указано иное).</li>
+</ul>
+
+	<ul id="footer-places">
+	<li id="footer-places-privacy"><a href="/IF%D0%92%D0%B8%D0%BA%D0%B8:%D0%9F%D0%BE%D0%BB%D0%B8%D1%82%D0%B8%D0%BA%D0%B0_%D0%BA%D0%BE%D0%BD%D1%84%D0%B8%D0%B4%D0%B5%D0%BD%D1%86%D0%B8%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Политика конфиденциальности</a></li>
+	<li id="footer-places-about"><a href="/IF%D0%92%D0%B8%D0%BA%D0%B8:%D0%9E%D0%BF%D0%B8%D1%81%D0%B0%D0%BD%D0%B8%D0%B5">О IFВики</a></li>
+	<li id="footer-places-disclaimers"><a href="/IF%D0%92%D0%B8%D0%BA%D0%B8:%D0%9E%D1%82%D0%BA%D0%B0%D0%B7_%D0%BE%D1%82_%D0%BE%D1%82%D0%B2%D0%B5%D1%82%D1%81%D1%82%D0%B2%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8">Отказ от ответственности</a></li>
+	<li id="footer-places-mobileview"><a href="https://ifwiki.ru/index.php?title=FireURQ:%D0%9E%D1%81%D0%BE%D0%B1%D0%B5%D0%BD%D0%BD%D0%BE%D1%81%D1%82%D0%B8_%D1%80%D0%B5%D0%B0%D0%BB%D0%B8%D0%B7%D0%B0%D1%86%D0%B8%D0%B8_URQL&amp;mobileaction=toggle_view_mobile" class="noprint stopMobileRedirectToggle">Мобильная версия</a></li>
+</ul>
+
+	<ul id="footer-icons" class="noprint">
+	<li id="footer-copyrightico"><a href="https://creativecommons.org/licenses/by-nc/3.0/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="https://i.creativecommons.org/l/by-nc/3.0/88x31.png" alt="Attribution-Noncommercial 3.0 Unported" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbyico"><a href="https://www.mediawiki.org/" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/resources/assets/poweredby_mediawiki.svg" alt="Powered by MediaWiki" width="88" height="31" loading="lazy"></a></li>
+	<li id="footer-poweredbysmwico"><a href="https://www.semantic-mediawiki.org/wiki/Semantic_MediaWiki" class="cdx-button cdx-button--fake-button cdx-button--size-large cdx-button--fake-button--enabled"><img src="/extensions/SemanticMediaWiki/res/smw/assets/logo_footer.svg" alt="Powered by Semantic MediaWiki" class="smw-footer" width="88" height="31" loading="lazy"></a></li>
+</ul>
+
+</footer>
+
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function (d, w, c) {
+        (w[c] = w[c] || []).push(function() {
+            try {
+                w.yaCounter14659585 = new Ya.Metrika({
+                    id:14659585,
+                    clickmap:true,
+                    trackLinks:true,
+                    accurateTrackBounce:true
+                });
+            } catch(e) { }
+        });
+
+        var n = d.getElementsByTagName("script")[0],
+            s = d.createElement("script"),
+            f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src = "https://mc.yandex.ru/metrika/watch.js";
+
+        if (w.opera == "[object Opera]") {
+            d.addEventListener("DOMContentLoaded", f, false);
+        } else { f(); }
+    })(document, window, "yandex_metrika_callbacks");
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/14659585" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+<script>(RLQ=window.RLQ||[]).push(function(){mw.config.set({"wgBackendResponseTime":105,"wgPageParseReport":{"smw":{"limitreport-intext-parsertime":0.001},"limitreport":{"cputime":"0.032","walltime":"0.033","ppvisitednodes":{"value":150,"limit":1000000},"postexpandincludesize":{"value":0,"limit":2097152},"templateargumentsize":{"value":0,"limit":2097152},"expansiondepth":{"value":2,"limit":100},"expensivefunctioncount":{"value":0,"limit":100},"unstrip-depth":{"value":0,"limit":20},"unstrip-size":{"value":146,"limit":5000000},"timingprofile":["100.00%    0.000      1 -total"]},"loops":{"limitreport-count-limited":{"value":0,"limit":100}},"cachereport":{"timestamp":"20260303062550","ttl":86400,"transientcontent":false}}});});</script>
+</body>
+</html>
