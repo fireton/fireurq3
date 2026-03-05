@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<skin>
+  <screen width="800" height="600" fullscreen="false" />
+  <main bgcolor="FF0E1117">
+    <textpane left="24" top="24" width="752" height="500" btnalign="1" />
+    <menus selectioncolor="FF2A3344" />
+  </main>
+</skin>

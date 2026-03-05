@@ -29,6 +29,7 @@ Current implemented pipeline:
 ## Projects
 
 - `src/Urql.Core` - core library (syntax, IR, runtime)
+- `src/Urql.Player.Compat` - compatibility layer (skin loading, rich text links, virtual viewport mapping)
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
 - `src/Urql.Runner.MonoGame` - desktop MonoGame runner with console-like transcript flow
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
@@ -121,6 +122,13 @@ dotnet run --project src/Urql.Runner.MonoGame/Urql.Runner.MonoGame.csproj /path/
 
 If no quest path is passed, the runner opens an OS-native file chooser dialog.
 
+Official-player mode defaults:
+
+- legacy compatibility profile: `FireUrqLegacy`
+- skin fallback: quest `skin.xml` / `skin.json` -> built-in `Assets/Skins/default/skin.xml`
+- virtual game-space: skin-defined size (default `800x600`)
+- resizable window via letterboxed aspect-preserving view mapping
+
 MonoGame runner controls:
 
 - `Up` / `Down` - move active choice
@@ -145,6 +153,10 @@ MonoGame runner behavior:
 - Spec: `docs/Spec.md`
 - MVP plan: `docs/fireurq3_mvp_plan.md`
 - MonoGame runner plan: `docs/quest_runner_monogame_plan.md`
+- Official player design: `docs/official_player_design.md`
+- Skin compatibility map: `docs/skin_compatibility.md`
+- Skin JSON v1: `docs/skin_schema_v1.md`
+- Virtual viewport policy: `docs/virtual_viewport_policy.md`
 - Source references:
   - `docs/URQL.txt`
   - `docs/FireURQ_Особенности реализации URQL — IFВики.html`
