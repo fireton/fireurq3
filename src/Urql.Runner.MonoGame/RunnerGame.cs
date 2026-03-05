@@ -17,7 +17,7 @@ public sealed class RunnerGame : Game
     private const float LineSpacing = 4f;
 
     private readonly GraphicsDeviceManager _graphics;
-    private readonly string[] _args;
+    private readonly string _questPath;
     private readonly PlayerRuntimeController _runtime = new();
 
     private SpriteBatch? _spriteBatch;
@@ -32,9 +32,9 @@ public sealed class RunnerGame : Game
     private List<ChoiceHitArea> _choiceHitAreas = [];
     private List<LinkHitArea> _linkHitAreas = [];
 
-    public RunnerGame(string[] args)
+    public RunnerGame(string questPath)
     {
-        _args = args;
+        _questPath = questPath;
         _graphics = new GraphicsDeviceManager(this)
         {
             PreferredBackBufferWidth = 1280,
@@ -64,7 +64,7 @@ public sealed class RunnerGame : Game
             return;
         }
 
-        _runtime.Load(_args.FirstOrDefault(), GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+        _runtime.Load(_questPath, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
         if (_runtime.Frame is not null)
         {
             _graphics.PreferredBackBufferWidth = _runtime.Frame.VirtualWidth;

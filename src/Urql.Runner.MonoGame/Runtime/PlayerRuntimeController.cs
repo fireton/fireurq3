@@ -29,12 +29,7 @@ public sealed class PlayerRuntimeController
 
         if (string.IsNullOrWhiteSpace(questPath))
         {
-            questPath = QuestFilePicker.TryPickQuestFilePath();
-        }
-
-        if (string.IsNullOrWhiteSpace(questPath))
-        {
-            FatalMessage = "Quest path was not provided and no file was selected.";
+            FatalMessage = "Quest path was not provided.";
             return;
         }
 
