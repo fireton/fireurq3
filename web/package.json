@@ -1,0 +1,17 @@
+{
+  "name": "fireurq-web-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "app",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace app",
+    "build": "npm run build --workspace app",
+    "preview": "npm run preview --workspace app",
+    "typecheck": "npm run typecheck --workspace app && npm run typecheck --workspace @fireurq/core",
+    "test": "npm run test --workspace @fireurq/core"
+  }
+}

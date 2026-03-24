@@ -10,6 +10,7 @@ Build a headless `.NET 8 / C# 12` URQL interpreter core that is DOS_URQ-compatib
 - Deterministic runtime behavior is required.
 - Keep dependencies minimal.
 - Strategic direction: compatibility-first with legacy quests, but this is a new URQL implementation intended to be significantly extensible beyond DOS_URQ.
+- Active migration direction: the long-term player/runtime target is a TypeScript web application, while preserving deterministic core behavior and compatibility semantics during the transition.
 
 ## 2. Source of Truth
 

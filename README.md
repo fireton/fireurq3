@@ -32,6 +32,7 @@ Current implemented pipeline:
 - `src/Urql.Player.Compat` - compatibility layer (skin loading, rich text links, virtual viewport mapping)
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
 - `src/Urql.Runner.MonoGame` - desktop MonoGame runner with console-like transcript flow
+- `web` - TypeScript/web migration workspace (`app` shell + planned `core` / `player` packages)
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
 - scenario harness tests: file-based quest run + scripted button walks + checkpoints
 
