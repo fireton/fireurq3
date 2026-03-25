@@ -147,6 +147,10 @@ export class Lexer {
           this.index += 1;
           this.addToken(tokenKind.question, "?", start, this.index);
           continue;
+        case "@":
+          this.index += 1;
+          this.addToken(tokenKind.at, "@", start, this.index);
+          continue;
         case ".":
           this.index += 1;
           this.addToken(tokenKind.dot, ".", start, this.index);

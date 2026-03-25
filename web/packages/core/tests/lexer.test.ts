@@ -87,9 +87,8 @@ end
   it("reports unexpected characters", () => {
     const result = Lexer.lex("@");
 
-    expect(result.diagnostics).toHaveLength(1);
-    expect(result.diagnostics[0]?.code).toBe(diagnosticCode.unexpectedCharacter);
-    expect(result.diagnostics[0]?.severity).toBe("error");
+    expect(result.diagnostics).toHaveLength(0);
+    expect(result.tokens.some((token) => token.kind === tokenKind.at && token.text === "@")).toBe(true);
   });
 
   it("reports unterminated strings", () => {
@@ -134,5 +133,14 @@ end
         (token) => token.kind === tokenKind.exclamation && token.text === "!"
       )
     ).toBe(true);
+  });
+
+  it("keeps email punctuation in raw text", () => {
+    const result = Lexer.lex("pln test@example.com");
+
+    expect(
+      result.diagnostics.some((item) => item.code === diagnosticCode.unexpectedCharacter)
+    ).toBe(false);
+    expect(result.tokens.some((token) => token.kind === tokenKind.at && token.text === "@")).toBe(true);
   });
 });

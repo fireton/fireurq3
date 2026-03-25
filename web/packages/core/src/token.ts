@@ -26,6 +26,7 @@ export const tokenKind = {
   hash: "Hash",
   dollar: "Dollar",
   question: "Question",
+  at: "At",
   dot: "Dot",
   exclamation: "Exclamation",
   keywordIf: "KeywordIf",

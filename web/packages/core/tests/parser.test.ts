@@ -124,6 +124,24 @@ goto next
     expect(print.textExpression.rawText).toBe("Привет, мир. Пока!");
   });
 
+  it("parses email punctuation in raw print tails", () => {
+    const parse = Parser.parse("pln test@example.com");
+    const print = parse.program.lines[0]!.statements[0];
+
+    expect(parse.diagnostics.filter((item) => item.severity === "error")).toHaveLength(0);
+    expect(print?.kind).toBe("PrintStatement");
+    if (!print || print.kind !== "PrintStatement") {
+      return;
+    }
+
+    expect(print.textExpression.kind).toBe("RawTextExpression");
+    if (print.textExpression.kind !== "RawTextExpression") {
+      return;
+    }
+
+    expect(print.textExpression.rawText).toBe("test@example.com");
+  });
+
   it("parses invkill command", () => {
     const parse = Parser.parse("invkill");
 

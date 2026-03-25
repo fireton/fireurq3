@@ -33,6 +33,7 @@ Current implemented pipeline:
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
 - `src/Urql.Runner.MonoGame` - desktop MonoGame runner with console-like transcript flow
 - `web` - TypeScript/web migration workspace (`app` shell + planned `core` / `player` packages)
+- `web/tools/diagnose-quest.mjs` - CLI diagnoser for quest encoding, parse diagnostics, and compiler diagnostics
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
 - scenario harness tests: file-based quest run + scripted button walks + checkpoints
 
@@ -61,6 +62,7 @@ Implemented runtime bridges/behavior:
 - bare inventory item checks in expressions/conditions (e.g. `if not Веревка then ...`)
 - `use_...` label invocation API with proc-like return
 - print raw tails preserve literal quotes (`pln "done"` prints `"done"`)
+- raw print/button tails preserve plain punctuation such as `@` (`pln test@example.com`)
 - unsupported commands are parsed as warning + no-op (including `%include`-style macro lines)
 
 Not implemented yet:
@@ -89,6 +91,22 @@ If your environment has restricted network, use cached NuGet packages:
 ```bash
 cd /Users/fireton/fieurq3
 NUGET_PACKAGES=/Users/fireton/.nuget/packages dotnet test tests/Urql.Core.Tests/Urql.Core.Tests.csproj --ignore-failed-sources
+```
+
+## Web Diagnostics
+
+Run the web-side quest diagnoser:
+
+```bash
+cd /Users/fireton/fieurq3/web
+npm run diagnose:quest -- ../tests/quests/hamster2.qst
+```
+
+Optional strict mode treats unsupported commands as errors:
+
+```bash
+cd /Users/fireton/fieurq3/web
+npm run diagnose:quest -- ../tests/quests/hamster2.qst --strict
 ```
 
 ## Runner

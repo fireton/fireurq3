@@ -74,11 +74,11 @@ export async function loadQuestFromFile(file: File): Promise<LoadedQuestDocument
   );
 }
 
-function buildLoadedDocument(
+async function buildLoadedDocument(
   source: ResolvedQuestSource | { kind: "file"; name: string },
   bytes: Uint8Array
-): LoadedQuestDocument {
-  const load = UrqlTextLoader.decode(bytes, { encodingName: "auto" });
+): Promise<LoadedQuestDocument> {
+  const load = await UrqlTextLoader.decodeAsync(bytes, { encodingName: "auto" });
   const parse = Parser.parse(load.text);
   const ir = Compiler.compile(parse.program, parse.diagnostics);
 

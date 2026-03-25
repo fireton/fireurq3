@@ -1,112 +1,96 @@
-export interface UrqlTextLoadOptions {
-  encodingName?: string;
-}
+import {
+  decodeBytes,
+  decodeWithAutoDetector,
+  type UrqlEncodingCandidate,
+  type UrqlEncodingDetection,
+  type UrqlTextLoadOptions,
+  type UrqlTextLoadResult,
+  rankCandidates
+} from "./io-common.js";
 
-export interface UrqlTextLoadResult {
-  text: string;
-  encodingName: string;
-  confidence: number;
-  bomDetected: boolean;
-}
+export { type UrqlEncodingCandidate, type UrqlEncodingDetection, type UrqlTextLoadOptions, type UrqlTextLoadResult } from "./io-common.js";
 
 export class UrqlTextLoader {
   static decode(
     bytes: Uint8Array,
     options: UrqlTextLoadOptions = {}
   ): UrqlTextLoadResult {
-    const requested = (options.encodingName ?? "auto").trim().toLowerCase();
+    return decodeWithAutoDetector(bytes, options, detectEncodingHeuristically);
+  }
 
-    if (requested !== "auto") {
-      const encodingName = normalizeEncodingName(requested);
-      return {
-        text: decodeBytes(bytes, encodingName, encodingName === "utf-8"),
-        encodingName,
-        confidence: 1,
-        bomDetected: false
-      };
-    }
+  static detectAutoEncoding(bytes: Uint8Array): UrqlEncodingDetection {
+    return detectEncodingHeuristically(bytes);
+  }
 
-    const bomResult = tryDecodeByBom(bytes);
-    if (bomResult) {
-      return bomResult;
-    }
+  static async decodeAsync(
+    bytes: Uint8Array,
+    options: UrqlTextLoadOptions = {}
+  ): Promise<UrqlTextLoadResult> {
+    return this.decode(bytes, options);
+  }
 
-    const candidates: Array<{ name: string; text: string; score: number }> = [];
-
-    const utf8Text = tryDecodeUtf8Strict(bytes);
-    if (utf8Text !== null) {
-      candidates.push({
-        name: "utf-8",
-        text: utf8Text,
-        score: scoreText(utf8Text, "utf-8")
-      });
-    }
-
-    for (const name of ["cp1251", "cp866", "koi8-r"] as const) {
-      const text = decodeBytes(bytes, name, false);
-      candidates.push({
-        name,
-        text,
-        score: scoreText(text, name)
-      });
-    }
-
-    const ranked = [...candidates].sort((left, right) => {
-      if (right.score !== left.score) {
-        return right.score - left.score;
-      }
-
-      return priorityOf(left.name) - priorityOf(right.name);
-    });
-
-    let best = ranked[0]!;
-    const utf8Candidate = ranked.find((item) => item.name === "utf-8");
-    if (utf8Candidate) {
-      const nonAsciiBytes = [...bytes].filter((item) => item >= 0x80).length;
-      const margin = nonAsciiBytes > 0 ? 0.75 : 0.15;
-      if (utf8Candidate.score >= best.score - margin) {
-        best = utf8Candidate;
-      }
-    }
-
-    return {
-      text: best.text,
-      encodingName: best.name,
-      confidence: computeConfidence(candidates, best.score),
-      bomDetected: false
-    };
+  static async detectAutoEncodingAsync(bytes: Uint8Array): Promise<UrqlEncodingDetection> {
+    return this.detectAutoEncoding(bytes);
   }
 }
 
-function tryDecodeByBom(bytes: Uint8Array): UrqlTextLoadResult | null {
-  if (bytes.length >= 3 && bytes[0] === 0xef && bytes[1] === 0xbb && bytes[2] === 0xbf) {
-    return {
-      text: new TextDecoder("utf-8").decode(bytes.slice(3)),
+export async function detectEncoding(bytes: Uint8Array): Promise<UrqlEncodingDetection> {
+  return detectEncodingHeuristically(bytes);
+}
+
+function detectEncodingHeuristically(bytes: Uint8Array): UrqlEncodingDetection {
+  const candidates: Array<{ encodingName: string; text: string; score: number }> = [];
+
+  const utf8Text = tryDecodeUtf8Strict(bytes);
+  if (utf8Text !== null) {
+    candidates.push({
       encodingName: "utf-8",
-      confidence: 1,
-      bomDetected: true
-    };
+      text: utf8Text,
+      score: scoreText(utf8Text, "utf-8")
+    });
   }
 
-  if (bytes.length >= 2 && bytes[0] === 0xff && bytes[1] === 0xfe) {
-    return {
-      text: new TextDecoder("utf-16le").decode(bytes.slice(2)),
-      encodingName: "utf-16le",
-      confidence: 1,
-      bomDetected: true
-    };
+  for (const encodingName of ["cp1251", "cp866", "koi8-r"] as const) {
+    const text = decodeBytes(bytes, encodingName, false);
+    candidates.push({
+      encodingName,
+      text,
+      score: scoreText(text, encodingName)
+    });
   }
 
-  if (bytes.length >= 2 && bytes[0] === 0xfe && bytes[1] === 0xff) {
-    return {
-      text: new TextDecoder("utf-16be").decode(bytes.slice(2)),
-      encodingName: "utf-16be",
-      confidence: 1,
-      bomDetected: true
-    };
+  const ranked = [...candidates].sort((left, right) => {
+    if (right.score !== left.score) {
+      return right.score - left.score;
+    }
+
+    return heuristicPriority(left.encodingName) - heuristicPriority(right.encodingName);
+  });
+
+  let best = ranked[0]!;
+  const utf8Candidate = ranked.find((item) => item.encodingName === "utf-8");
+  if (utf8Candidate) {
+    const nonAsciiBytes = [...bytes].filter((item) => item >= 0x80).length;
+    const margin = nonAsciiBytes > 0 ? 0.75 : 0.15;
+    if (utf8Candidate.score >= best.score - margin) {
+      best = utf8Candidate;
+    }
   }
 
-  return null;
+  const normalizedCandidates = rankCandidates(
+    candidates.map((item) => ({
+      encodingName: item.encodingName,
+      confidence: computeConfidence(candidates, item.score)
+    })),
+    ["utf-8", "cp1251", "cp866", "koi8-r"]
+  );
+
+  return {
+    encodingName: best.encodingName,
+    confidence: computeConfidence(candidates, best.score),
+    bomDetected: false,
+    candidates: normalizedCandidates
+  };
 }
 
 function tryDecodeUtf8Strict(bytes: Uint8Array): string | null {
@@ -117,52 +101,7 @@ function tryDecodeUtf8Strict(bytes: Uint8Array): string | null {
   }
 }
 
-function decodeBytes(bytes: Uint8Array, encodingName: string, fatal: boolean): string {
-  return new TextDecoder(resolveTextDecoderEncoding(encodingName), { fatal }).decode(bytes);
-}
-
-function resolveTextDecoderEncoding(encodingName: string): string {
-  switch (normalizeEncodingName(encodingName)) {
-    case "cp1251":
-      return "windows-1251";
-    case "cp866":
-      return "ibm866";
-    case "koi8-r":
-      return "koi8-r";
-    case "utf-8":
-      return "utf-8";
-    case "utf-16le":
-      return "utf-16le";
-    case "utf-16be":
-      return "utf-16be";
-    default:
-      throw new Error(`Unsupported encoding '${encodingName}'.`);
-  }
-}
-
-function normalizeEncodingName(name: string): string {
-  switch (name.trim().toLowerCase()) {
-    case "utf8":
-      return "utf-8";
-    case "windows-1251":
-    case "1251":
-    case "cp1251":
-      return "cp1251";
-    case "ibm866":
-    case "866":
-    case "cp866":
-      return "cp866";
-    case "koi8r":
-    case "koi8-r":
-      return "koi8-r";
-    case "utf-16":
-      return "utf-16le";
-    default:
-      return name.trim().toLowerCase();
-  }
-}
-
-function priorityOf(name: string): number {
+function heuristicPriority(name: string): number {
   switch (name) {
     case "utf-8":
       return 0;
@@ -214,6 +153,7 @@ function scoreText(text: string, encodingName: string): number {
   const cyrillicRatio = cyrillic / length;
   const boxRatio = boxDrawing / length;
   const replacementRatio = replacement / length;
+  const russianSequenceScore = scoreRussianLetterSequences(text);
 
   const keywords = /\b(end|if|then|else|goto|proc|btn|instr|print|println|pln)\b/im.test(text)
     ? 0.35
@@ -222,6 +162,7 @@ function scoreText(text: string, encodingName: string): number {
   let baseScore =
     printableRatio * 2 +
     cyrillicRatio * 1.4 +
+    russianSequenceScore * 2.2 +
     keywords -
     controlRatio * 2 -
     boxRatio * 4 -
@@ -234,17 +175,66 @@ function scoreText(text: string, encodingName: string): number {
   return baseScore;
 }
 
+const commonRussianBigrams: readonly string[] = [
+  "ст", "но", "ен", "то", "на", "ов", "ни", "ра", "ко", "по",
+  "пр", "го", "ро", "не", "во", "ть", "ло", "та", "ос", "ал",
+  "ли", "от", "ре", "ка", "ер", "де", "ел", "ри", "ес", "ва"
+] as const;
+
+const commonRussianTrigrams: readonly string[] = [
+  "про", "ени", "ост", "ого", "ать", "ить", "что", "это", "как", "его",
+  "ого", "под", "при", "для", "тер", "ени", "ова", "ста", "ник", "ать"
+] as const;
+
+function scoreRussianLetterSequences(text: string): number {
+  const normalized = text.toLowerCase();
+  const lettersOnly = [...normalized].filter((char) => /[а-яё]/u.test(char)).join("");
+
+  if (lettersOnly.length < 8) {
+    return 0;
+  }
+
+  let bigramHits = 0;
+  let trigramHits = 0;
+  let bigramWindows = 0;
+  let trigramWindows = 0;
+
+  for (let index = 0; index < lettersOnly.length - 1; index += 1) {
+    bigramWindows += 1;
+    if (commonRussianBigrams.includes(lettersOnly.slice(index, index + 2))) {
+      bigramHits += 1;
+    }
+  }
+
+  for (let index = 0; index < lettersOnly.length - 2; index += 1) {
+    trigramWindows += 1;
+    if (commonRussianTrigrams.includes(lettersOnly.slice(index, index + 3))) {
+      trigramHits += 1;
+    }
+  }
+
+  const bigramScore = bigramWindows > 0 ? bigramHits / bigramWindows : 0;
+  const trigramScore = trigramWindows > 0 ? trigramHits / trigramWindows : 0;
+  return bigramScore * 0.65 + trigramScore * 0.35;
+}
+
 function computeConfidence(
-  candidates: Array<{ name: string; text: string; score: number }>,
-  bestScore: number
+  candidates: Array<{ encodingName: string; text: string; score: number }>,
+  score: number
 ): number {
   if (candidates.length <= 1) {
     return 1;
   }
 
-  const secondScore = [...candidates]
+  const sortedScores = [...candidates]
     .map((item) => item.score)
-    .sort((left, right) => right - left)[1] ?? 0;
+    .sort((left, right) => right - left);
+  const bestScore = sortedScores[0] ?? score;
+  const secondScore = sortedScores[1] ?? 0;
+
+  if (score < bestScore) {
+    return Math.max(0.01, Math.min(0.49, 0.5 - Math.max(0, bestScore - score)));
+  }
 
   const gap = Math.max(0, bestScore - secondScore);
   return Math.min(1, 0.5 + gap);

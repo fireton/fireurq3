@@ -72,6 +72,7 @@ Out of scope for this stage:
   - Escapes (assumption): `\\`, `\"`, `\n`, `\r`, `\t`, `\xNN`
   - Unescaped text in some command tails is allowed by command grammar (legacy-like), but parser normalizes into string nodes where applicable.
   - Raw print tails preserve literal quotes; `pln "done"` prints `"done"`.
+  - Raw print/button tails also preserve plain punctuation such as `@` in `pln test@example.com`.
 
 ## 4. Script Structure
 

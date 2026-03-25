@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
+import { Compiler } from "../src/compiler.js";
+import { Parser } from "../src/parser.js";
+import { UrqlTextLoader } from "../src/io.js";
 import { vmStatus } from "../src/vm.js";
 import { QuestScenarioHarness, resolveFromRepo } from "./scenario-harness.js";
+import { readFileSync } from "node:fs";
 
 describe("Hamster scenarios", () => {
   it("hamster1 scenarios run without fault", () => {
@@ -55,5 +59,16 @@ describe("Hamster scenarios", () => {
 
     expect(result.vm.status).toBe(vmStatus.halted);
     expect(result.vm.outputText).toContain("под звуки фанфар спускаетесь по ней");
+  });
+
+  it("hamster2 parses email text without diagnostics", () => {
+    const bytes = new Uint8Array(readFileSync(resolveFromRepo("tests/quests/hamster2.qst")));
+    const load = UrqlTextLoader.decode(bytes, { encodingName: "auto" });
+    const parse = Parser.parse(load.text);
+    const ir = Compiler.compile(parse.program, parse.diagnostics);
+
+    expect(load.encodingName).toBe("cp1251");
+    expect(parse.diagnostics).toHaveLength(0);
+    expect(ir.diagnostics).toHaveLength(0);
   });
 });

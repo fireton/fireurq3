@@ -975,6 +975,10 @@ function reconstructRawText(parts: string[]): string {
 }
 
 function needsSpaceBetween(left: string, right: string): boolean {
+  if (left === "@" || right === "@") {
+    return false;
+  }
+
   if (right === "," || right === "." || right === "!" || right === "?" || right === ":" || right === ";") {
     return false;
   }
@@ -984,6 +988,10 @@ function needsSpaceBetween(left: string, right: string): boolean {
   }
 
   if (left === "," || left === "." || left === "!" || left === "?" || left === ":" || left === ";") {
+    if (left === "." && /[a-z0-9_-]/i.test(right)) {
+      return false;
+    }
+
     return true;
   }
 
