@@ -1,4 +1,7 @@
+export * from "./player-frame.js";
+export * from "./session.js";
 export * from "./source.js";
+export * from "./viewport.js";
 
 export const playerMigrationStatus = {
   summary:

@@ -75,6 +75,30 @@ body {
   font-size: clamp(1.5rem, 3vw, 2.4rem);
 }
 
+.player-status {
+  display: grid;
+  gap: 6px;
+  text-align: right;
+  color: #d7d0c3;
+  font-size: 0.92rem;
+}
+
+.player-canvas-host {
+  min-height: 620px;
+  border-radius: 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
+    rgba(8, 10, 14, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.player-canvas-host canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .dropzone {
   display: grid;
   place-items: center;
@@ -156,5 +180,13 @@ body {
 
   .dropzone {
     min-height: 200px;
+  }
+
+  .player-canvas-host {
+    min-height: 420px;
+  }
+
+  .player-status {
+    text-align: left;
   }
 }

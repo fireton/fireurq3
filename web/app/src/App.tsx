@@ -1,4 +1,4 @@
-import { useEffect, useState, type ChangeEvent, type DragEvent } from "react";
+import { lazy, Suspense, useEffect, useState, type ChangeEvent, type DragEvent } from "react";
 import {
   loadQuestFromFile,
   loadQuestFromRequest,
@@ -6,6 +6,11 @@ import {
   type LoadedQuestDocument
 } from "@fireurq/player";
 import { appConfig } from "./app-config";
+import { PlayerErrorBoundary } from "./PlayerErrorBoundary";
+
+const GraphicalPlayer = lazy(async () => import("./GraphicalPlayer").then((module) => ({
+  default: module.GraphicalPlayer
+})));
 
 export function App() {
   const [loading, setLoading] = useState(false);
@@ -86,25 +91,26 @@ export function App() {
       </section>
 
       {loadedQuest ? (
-        <section className="panel player-panel">
-          <div className="player-header">
-            <div>
-              <p className="eyebrow">Player</p>
-              <h2>{describeSource(loadedQuest)}</h2>
-            </div>
-          </div>
-
-          <div className="meta-grid">
-            <Meta label="Source" value={describeSource(loadedQuest)} />
-            <Meta label="Encoding" value={loadedQuest.encodingName} />
-            <Meta label="Confidence" value={loadedQuest.confidence.toFixed(2)} />
-            <Meta label="BOM" value={loadedQuest.bomDetected ? "yes" : "no"} />
-            <Meta label="Lines" value={String(loadedQuest.lineCount)} />
-            <Meta label="Parse Diags" value={String(loadedQuest.parseDiagnosticsCount)} />
-            <Meta label="Compiler Diags" value={String(loadedQuest.compilerDiagnosticsCount)} />
-            <Meta label="Preview" value={firstPreviewLine(loadedQuest.text)} />
-          </div>
-        </section>
+        <PlayerErrorBoundary>
+          <Suspense
+            fallback={
+              <section className="panel player-panel">
+                <div className="player-header">
+                  <div>
+                    <p className="eyebrow">Player</p>
+                    <h2>{describeSource(loadedQuest)}</h2>
+                  </div>
+                </div>
+                <div className="resolution">
+                  <span className="resolution-label">Status</span>
+                  <span className="mono">Loading graphical player...</span>
+                </div>
+              </section>
+            }
+          >
+            <GraphicalPlayer quest={loadedQuest} />
+          </Suspense>
+        </PlayerErrorBoundary>
       ) : (
         <section className="panel">
           {questParam ? (
@@ -158,25 +164,8 @@ export function App() {
   );
 }
 
-function Meta(props: { label: string; value: string }) {
-  return (
-    <div className="meta-card">
-      <span className="meta-label">{props.label}</span>
-      <span className="meta-value">{props.value}</span>
-    </div>
-  );
-}
-
 function describeSource(document: LoadedQuestDocument): string {
-  if (document.source.kind === "file") {
-    return document.source.name;
-  }
-
-  return document.source.url;
-}
-
-function firstPreviewLine(text: string): string {
-  return text.split(/\r?\n/u).find((line) => line.trim().length > 0)?.slice(0, 120) ?? "(empty)";
+  return document.source.kind === "file" ? document.source.name : document.source.url;
 }
 
 function safeResolve(request: string, defaultBaseUrl: string) {
