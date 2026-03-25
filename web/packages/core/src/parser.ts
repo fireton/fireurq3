@@ -955,32 +955,23 @@ function reconstructRawText(parts: string[]): string {
   let result = "";
 
   for (const part of parts) {
-    const normalized = normalizeRawSegment(part);
-    if (normalized.length === 0) {
+    if (part.length === 0) {
       continue;
     }
 
     if (result.length === 0) {
-      result = normalized;
+      result = part;
       continue;
     }
 
-    if (needsSpaceBetween(result[result.length - 1]!, normalized[0]!)) {
+    if (needsSpaceBetween(result[result.length - 1]!, part[0]!)) {
       result += " ";
     }
 
-    result += normalized;
+    result += part;
   }
 
   return result;
-}
-
-function normalizeRawSegment(segment: string): string {
-  if (segment.startsWith("\"") && segment.endsWith("\"") && segment.length >= 2) {
-    return segment.slice(1, -1);
-  }
-
-  return segment;
 }
 
 function needsSpaceBetween(left: string, right: string): boolean {

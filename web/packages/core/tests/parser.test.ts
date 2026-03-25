@@ -23,6 +23,23 @@ end
     expect(parse.program.lines[2]?.statements[0]?.kind).toBe("EndStatement");
   });
 
+  it("preserves literal quotes in print raw tails", () => {
+    const parse = Parser.parse('pln "done"');
+    const print = parse.program.lines[0]!.statements[0];
+
+    expect(print?.kind).toBe("PrintStatement");
+    if (!print || print.kind !== "PrintStatement") {
+      return;
+    }
+
+    expect(print.textExpression.kind).toBe("RawTextExpression");
+    if (print.textExpression.kind !== "RawTextExpression") {
+      return;
+    }
+
+    expect(print.textExpression.rawText).toBe('"done"');
+  });
+
   it("builds if then else chains", () => {
     const parse = Parser.parse('if a=1 then p "x" & btn n,Go else goto end');
     const line = parse.program.lines[0]!;
@@ -75,7 +92,7 @@ end
       return;
     }
 
-    expect(print.textExpression.rawText).toBe("ok????");
+    expect(print.textExpression.rawText).toBe('"ok"????');
   });
 
   it("parses goto proc and btn", () => {

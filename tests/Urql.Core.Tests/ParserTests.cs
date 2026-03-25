@@ -29,6 +29,18 @@ public sealed class ParserTests
     }
 
     [Fact]
+    public void Parse_PrintRawTail_ShouldPreserveLiteralQuotes()
+    {
+        const string source = "pln \"done\"";
+        var parse = Parser.Parse(source);
+
+        var line = Assert.Single(parse.Program.Lines);
+        var print = Assert.IsType<PrintStatementSyntax>(Assert.Single(line.Statements));
+        var raw = Assert.IsType<RawTextExpressionSyntax>(print.TextExpression);
+        Assert.Equal("\"done\"", raw.RawText);
+    }
+
+    [Fact]
     public void Parse_ShouldBuildIfThenElseChains()
     {
         const string source = "if a=1 then p \"x\" & btn n,Go else goto end";
@@ -76,7 +88,7 @@ public sealed class ParserTests
         Assert.Equal("a", parse.Program.Lines[0].Label?.Name);
         var print = Assert.IsType<PrintStatementSyntax>(parse.Program.Lines[1].Statements[0]);
         var raw = Assert.IsType<RawTextExpressionSyntax>(print.TextExpression);
-        Assert.Equal("ok????", raw.RawText);
+        Assert.Equal("\"ok\"????", raw.RawText);
         Assert.IsType<EndStatementSyntax>(parse.Program.Lines[2].Statements[0]);
     }
 

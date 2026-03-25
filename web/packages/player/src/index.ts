@@ -1,9 +1,11 @@
+export * from "./source.js";
+
 export const playerMigrationStatus = {
   summary:
-    "The player package will host compatibility rendering, assets, viewport mapping, and FireURQ-style runtime services.",
+    "The player package now owns quest source resolution and browser-side quest loading for URL, library, and local file flows.",
   nextSteps: [
-    "Define quest package loading and asset resolution",
-    "Implement viewport and skin compatibility layers",
-    "Add a PixiJS renderer after core execution is available"
+    "Add session/runtime bridge on top of @fireurq/core",
+    "Introduce the graphical renderer contract for transcript and buttons",
+    "Connect quest loading to the PixiJS player scene"
   ]
 } as const;

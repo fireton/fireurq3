@@ -1,4 +1,5 @@
 export * from "./diagnostics.js";
+export * from "./io.js";
 export * from "./lexer.js";
 export * from "./parser-options.js";
 export * from "./parser.js";

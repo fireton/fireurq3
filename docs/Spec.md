@@ -71,6 +71,7 @@ Out of scope for this stage:
   - Double-quoted: `"text"`
   - Escapes (assumption): `\\`, `\"`, `\n`, `\r`, `\t`, `\xNN`
   - Unescaped text in some command tails is allowed by command grammar (legacy-like), but parser normalizes into string nodes where applicable.
+  - Raw print tails preserve literal quotes; `pln "done"` prints `"done"`.
 
 ## 4. Script Structure
 

@@ -60,6 +60,7 @@ Implemented runtime bridges/behavior:
 - `inv_<item>` read/write bridge
 - bare inventory item checks in expressions/conditions (e.g. `if not Веревка then ...`)
 - `use_...` label invocation API with proc-like return
+- print raw tails preserve literal quotes (`pln "done"` prints `"done"`)
 - unsupported commands are parsed as warning + no-op (including `%include`-style macro lines)
 
 Not implemented yet:

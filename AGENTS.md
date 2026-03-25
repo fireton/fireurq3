@@ -4,13 +4,16 @@ This file defines project-specific implementation and collaboration rules for ag
 
 ## 1. Project Goal
 
-Build a headless `.NET 8 / C# 12` URQL interpreter core that is DOS_URQ-compatible by default and extensible toward FireURQ behavior.
+Build a headless URQL interpreter core that is DOS_URQ-compatible by default and extensible toward FireURQ behavior.
 
 - No UI/renderer in core scope.
 - Deterministic runtime behavior is required.
 - Keep dependencies minimal.
 - Strategic direction: compatibility-first with legacy quests, but this is a new URQL implementation intended to be significantly extensible beyond DOS_URQ.
-- Active migration direction: the long-term player/runtime target is a TypeScript web application, while preserving deterministic core behavior and compatibility semantics during the transition.
+- Active development target: a TypeScript web application is now the primary platform for the project.
+- `.NET` is now a migration source, not the long-term runtime target.
+- During migration, preserve deterministic core behavior and compatibility semantics while moving implementation into the web stack.
+- After the migration is complete, the legacy `.NET` project is intended to be removed from the repository.
 
 ## 2. Source of Truth
 
@@ -37,6 +40,7 @@ If implementation changes behavior, update `docs/Spec.md` and `README.md` in the
 - DOS line continuation is supported:
   - physical lines starting with optional spaces/tabs then `_` continue previous logical line.
 - `p/pln/print/println` parse DOS-style raw line tail text.
+  - Literal quotes in print raw tails are preserved; `pln "done"` outputs `"done"`, not `done`.
 - `btn` parses DOS-style raw target and raw caption tails.
 
 ## 5. Runtime/VM Rules
