@@ -14,6 +14,13 @@ Build a headless URQL interpreter core that is DOS_URQ-compatible by default and
 - `.NET` is now a migration source, not the long-term runtime target.
 - During migration, preserve deterministic core behavior and compatibility semantics while moving implementation into the web stack.
 - After the migration is complete, the legacy `.NET` project is intended to be removed from the repository.
+- Web player layout should stay close to the classic FireURQ2 standard skin where practical:
+  - top menu bar at the top of the viewport,
+  - transcript pane occupying the remaining main area below it.
+- Current player target layout:
+  - the transcript pane should be flush with the edges of the virtual `800x600` viewport below the top menu bar,
+  - avoid decorative inner framing that reduces usable transcript area.
+  - visual styling may be modernized, but the spatial layout should stay as close to FireURQ2 as practical for legacy quest compatibility.
 
 ## 2. Source of Truth
 

@@ -3,14 +3,30 @@ import { Application, Container, Graphics, Text, TextStyle } from "pixi.js";
 import { PlayerSession, type LoadedQuestDocument } from "@fireurq/player";
 import type { FrameButton, PlayerFrame } from "@fireurq/player";
 
-const backgroundColor = 0x0e1117;
-const panelColor = 0x171b24;
+const backgroundColor = 0x10131a;
+const menuBarColor = 0x1d1313;
+const menuBarAccentColor = 0xffb28a;
 const panelBorderColor = 0x2d3341;
 const textColor = 0xe2e8f0;
 const accentColor = 0xffb28a;
 const buttonColor = 0x253247;
 const buttonHoverColor = 0x314564;
 const buttonTextColor = 0xf8fafc;
+const inventoryIconColor = 0xf4efe8;
+
+const layout = {
+  viewportWidth: 800,
+  viewportHeight: 600,
+  menuBarHeight: 46,
+  textPaneX: 20,
+  textPaneY: 55,
+  textPaneWidth: 760,
+  textPaneHeight: 525,
+  textInsetX: 0,
+  textInsetTop: 0,
+  textInsetBottom: 0,
+  buttonInsetX: 2
+} as const;
 
 export function GraphicalPlayer(props: { quest: LoadedQuestDocument }) {
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -193,17 +209,7 @@ export function GraphicalPlayer(props: { quest: LoadedQuestDocument }) {
   }, [appReady, frame, props.quest, scrollOffset, viewSize.height, viewSize.width]);
 
   return (
-    <section className="panel player-panel">
-      <div className="player-header">
-        <div>
-          <p className="eyebrow">Player</p>
-          <h2>{describeSource(props.quest)}</h2>
-        </div>
-        <div className="player-status">
-          <span>{frame?.status ?? "Loading"}</span>
-          <span>{props.quest.encodingName}</span>
-        </div>
-      </div>
+    <section className="player-shell">
       <div ref={hostRef} className="player-canvas-host" />
     </section>
   );
@@ -212,11 +218,22 @@ export function GraphicalPlayer(props: { quest: LoadedQuestDocument }) {
 function buildBackdrop(frame: PlayerFrame): Graphics {
   const graphics = new Graphics();
   graphics.rect(0, 0, frame.virtualWidth, frame.virtualHeight).fill(backgroundColor);
-  graphics.roundRect(18, 18, frame.virtualWidth - 36, frame.virtualHeight - 36, 20).fill(panelColor);
-  graphics.roundRect(18, 18, frame.virtualWidth - 36, frame.virtualHeight - 36, 20).stroke({
+
+  graphics.rect(0, 0, frame.virtualWidth, layout.menuBarHeight).fill(menuBarColor);
+
+  graphics.roundRect(670, 6, 110, 34, 12).stroke({
+    color: panelBorderColor,
+    width: 1
+  });
+  graphics.moveTo(0, layout.textPaneY).lineTo(frame.virtualWidth, layout.textPaneY).stroke({
+    color: panelBorderColor,
+    width: 1
+  });
+  graphics.moveTo(106, 29).lineTo(671, 29).stroke({
     color: panelBorderColor,
     width: 2
   });
+
   return graphics;
 }
 
@@ -227,31 +244,69 @@ function buildContentFlow(
 ): { container: Container; contentHeight: number; viewportHeight: number } {
   const container = new Container();
   const content = new Container();
-  const clipTop = 28;
-  const clipLeft = 28;
-  const clipWidth = frame.virtualWidth - 56;
-  const clipHeight = frame.virtualHeight - 56;
+  const clipTop = layout.textPaneY;
+  const clipLeft = layout.textPaneX;
+  const clipWidth = layout.textPaneWidth;
+  const clipHeight = layout.textPaneHeight;
 
   const mask = new Graphics();
-  mask.roundRect(clipLeft, clipTop, clipWidth, clipHeight, 20).fill(0xffffff);
+  mask.rect(clipLeft, clipTop, clipWidth, clipHeight).fill(0xffffff);
   container.addChild(mask);
   container.addChild(content);
   content.mask = mask;
+
+  const menuLabel = new Text({
+    text: "fireURQ",
+    style: new TextStyle({
+      fontFamily: "\"Georgia\", serif",
+      fontSize: 20,
+      fontWeight: "700",
+      fill: menuBarAccentColor
+    })
+  });
+  menuLabel.position.set(22, 11);
+  container.addChild(menuLabel);
+
+  const inventoryLabel = new Text({
+    text: "Инв.",
+    style: new TextStyle({
+      fontFamily: "\"Segoe UI\", sans-serif",
+      fontSize: 14,
+      fontWeight: "600",
+      fill: inventoryIconColor
+    })
+  });
+  inventoryLabel.position.set(715, 14);
+  container.addChild(inventoryLabel);
+
+  const inventoryIcon = new Graphics();
+  inventoryIcon.roundRect(684, 12, 20, 16, 4).stroke({
+    color: inventoryIconColor,
+    width: 2
+  });
+  inventoryIcon.moveTo(688, 12).lineTo(692, 8).lineTo(700, 8).lineTo(704, 12).stroke({
+    color: inventoryIconColor,
+    width: 2
+  });
+  container.addChild(inventoryIcon);
 
   const transcriptText = normalizeTranscript(frame);
   const transcript = new Text({
     text: transcriptText || "Quest loaded. Waiting for first frame output.",
     style: new TextStyle({
       fontFamily: "\"Segoe UI\", sans-serif",
-      fontSize: 18,
-      lineHeight: 28,
+      fontSize: 16,
+      lineHeight: 24,
       fill: textColor,
       wordWrap: true,
       breakWords: true,
-      wordWrapWidth: frame.virtualWidth - 104
+      wordWrapWidth: clipWidth - layout.textInsetX * 2
     })
   });
-  transcript.position.set(44, 44);
+  transcript.position.set(
+    clipLeft + layout.textInsetX,
+    clipTop + layout.textInsetTop
+  );
   content.addChild(transcript);
 
   let contentHeight = transcript.y + transcript.height;
@@ -265,15 +320,16 @@ function buildContentFlow(
     };
   }
 
-  const buttonWidth = frame.virtualWidth - 88;
-  const buttonHeight = 52;
-  const startY = contentHeight + 20;
+  const buttonWidth = clipWidth - layout.textInsetX * 2 - layout.buttonInsetX * 2;
+  const buttonHeight = 48;
+  const buttonGap = 16;
+  const startY = contentHeight + 16;
 
   frame.buttons.forEach((button, index) => {
     const buttonContainer = buildButton(
       button,
-      44,
-      startY + index * 68,
+      clipLeft + layout.textInsetX + layout.buttonInsetX,
+      startY + index * (buttonHeight + buttonGap),
       buttonWidth,
       buttonHeight,
       onSelect
@@ -281,7 +337,11 @@ function buildContentFlow(
     content.addChild(buttonContainer);
   });
 
-  contentHeight = startY + (frame.buttons.length - 1) * 68 + buttonHeight + 24;
+  contentHeight =
+    startY +
+    (frame.buttons.length - 1) * (buttonHeight + buttonGap) +
+    buttonHeight +
+    layout.textInsetBottom;
   content.y = -clampScroll(scrollOffset, contentHeight, clipHeight);
 
   return {
@@ -312,7 +372,7 @@ function buildButton(
     text: button.caption,
     style: new TextStyle({
       fontFamily: "\"Segoe UI\", sans-serif",
-      fontSize: 17,
+      fontSize: 16,
       fontWeight: "700",
       fill: buttonTextColor,
       wordWrap: true,
@@ -332,15 +392,11 @@ function buildButton(
 
 function drawButtonBackground(graphics: Graphics, width: number, height: number, hovered: boolean) {
   graphics.clear();
-  graphics.roundRect(0, 0, width, height, 18).fill(hovered ? buttonHoverColor : buttonColor);
-  graphics.roundRect(0, 0, width, height, 18).stroke({
+  graphics.roundRect(0, 0, width, height, 16).fill(hovered ? buttonHoverColor : buttonColor);
+  graphics.roundRect(0, 0, width, height, 16).stroke({
     color: hovered ? accentColor : panelBorderColor,
     width: hovered ? 2 : 1
   });
-}
-
-function describeSource(document: LoadedQuestDocument): string {
-  return document.source.kind === "file" ? document.source.name : document.source.url;
 }
 
 function normalizeTranscript(frame: PlayerFrame): string {
@@ -353,6 +409,6 @@ function normalizeTranscript(frame: PlayerFrame): string {
 }
 
 function clampScroll(current: number, contentHeight: number, viewportHeight: number): number {
-  const maxScroll = Math.max(0, contentHeight - (viewportHeight - 24));
+  const maxScroll = Math.max(0, contentHeight - viewportHeight);
   return Math.max(0, Math.min(maxScroll, current));
 }

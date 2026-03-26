@@ -41,8 +41,7 @@ body {
   font-size: 0.78rem;
 }
 
-.hero h1,
-.player-header h2 {
+.hero h1 {
   margin: 0;
   line-height: 0.95;
 }
@@ -59,38 +58,16 @@ body {
   backdrop-filter: blur(12px);
 }
 
-.player-panel {
-  display: grid;
-  gap: 20px;
-}
-
-.player-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.player-header h2 {
-  font-size: clamp(1.5rem, 3vw, 2.4rem);
-}
-
-.player-status {
-  display: grid;
-  gap: 6px;
-  text-align: right;
-  color: #d7d0c3;
-  font-size: 0.92rem;
+.player-shell {
+  padding: 0;
 }
 
 .player-canvas-host {
   min-height: 620px;
-  border-radius: 18px;
+  border-radius: 0;
   overflow: hidden;
-  background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-    rgba(8, 10, 14, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  border: none;
 }
 
 .player-canvas-host canvas {
@@ -184,9 +161,5 @@ body {
 
   .player-canvas-host {
     min-height: 420px;
-  }
-
-  .player-status {
-    text-align: left;
   }
 }

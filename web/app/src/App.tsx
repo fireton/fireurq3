@@ -94,13 +94,7 @@ export function App() {
         <PlayerErrorBoundary>
           <Suspense
             fallback={
-              <section className="panel player-panel">
-                <div className="player-header">
-                  <div>
-                    <p className="eyebrow">Player</p>
-                    <h2>{describeSource(loadedQuest)}</h2>
-                  </div>
-                </div>
+              <section className="player-shell">
                 <div className="resolution">
                   <span className="resolution-label">Status</span>
                   <span className="mono">Loading graphical player...</span>

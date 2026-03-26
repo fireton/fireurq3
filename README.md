@@ -1,6 +1,12 @@
 # FireURQ3
 
-Headless URQL core runtime + runner prototypes on .NET 8 / C# 12.
+Headless URQL core runtime + player migration work toward a TypeScript web application.
+
+Current web-player direction:
+
+- visual styling may be fresh and modernized
+- spatial layout should stay as close to classic FireURQ2 as practical
+- legacy quest compatibility takes priority over decorative padding or web-native chrome
 
 Current implemented pipeline:
 
@@ -33,6 +39,7 @@ Current implemented pipeline:
 - `src/Urql.Runner` - minimal CLI runner for manual smoke checks
 - `src/Urql.Runner.MonoGame` - desktop MonoGame runner with console-like transcript flow
 - `web` - TypeScript/web migration workspace (`app` shell + planned `core` / `player` packages)
+- `web/app` targets a modernized visual presentation with FireURQ2-like player layout proportions
 - `web/tools/diagnose-quest.mjs` - CLI diagnoser for quest encoding, parse diagnostics, and compiler diagnostics
 - `tests/Urql.Core.Tests` - unit/golden/execution tests
 - scenario harness tests: file-based quest run + scripted button walks + checkpoints
