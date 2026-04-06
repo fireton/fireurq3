@@ -131,3 +131,7 @@ Rule capture:
 - Prefer focused tests with behavior assertions over broad snapshots when possible.
 - No user-facing messages in non-English.
 - Keep comments in code in English.
+
+## 13. Development Stack
+
+- Always use pnpm instead of npm for terminal commands and dependency management.
