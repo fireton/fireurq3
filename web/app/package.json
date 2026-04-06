@@ -10,8 +10,8 @@
     "typecheck": "tsc -p tsconfig.json"
   },
   "dependencies": {
-    "@fireurq/core": "0.1.0",
-    "@fireurq/player": "0.1.0",
+    "@fireurq/core": "workspace:*",
+    "@fireurq/player": "workspace:*",
     "pixi.js": "^8.17.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0"

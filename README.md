@@ -106,14 +106,14 @@ Run the web-side quest diagnoser:
 
 ```bash
 cd /Users/fireton/fieurq3/web
-npm run diagnose:quest -- ../tests/quests/hamster2.qst
+pnpm diagnose:quest -- ../tests/quests/hamster2.qst
 ```
 
 Optional strict mode treats unsupported commands as errors:
 
 ```bash
 cd /Users/fireton/fieurq3/web
-npm run diagnose:quest -- ../tests/quests/hamster2.qst --strict
+pnpm diagnose:quest -- ../tests/quests/hamster2.qst --strict
 ```
 
 ## Runner

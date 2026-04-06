@@ -1,5 +1,6 @@
 .DS_Store
 .dotnet/
+.pnpm-store/
 .vs/
 .vscode/
 bin/
@@ -9,7 +10,9 @@ TestResults/
 *.suo
 release/
 web/node_modules/
+web/.tmp/
 web/**/node_modules/
 web/**/dist/
 web/**/.vite/
 web/**/coverage/
+pnpm-debug.log*

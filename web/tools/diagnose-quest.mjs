@@ -77,7 +77,7 @@ function parseQuestPath(argv) {
 }
 
 function printUsageAndExit() {
-  console.error("Usage: npm run diagnose:quest -- <path-to-quest.qst> [--strict]");
+  console.error("Usage: pnpm diagnose:quest -- <path-to-quest.qst> [--strict]");
   process.exit(1);
 }
 

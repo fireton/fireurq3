@@ -36,7 +36,7 @@ export class PlayerErrorBoundary extends Component<Props, State> {
             <span className="mono">{this.state.error.message}</span>
           </div>
           <p className="error">
-            If this happened right after installing or changing Pixi dependencies, restart `npm run dev`
+            If this happened right after installing or changing Pixi dependencies, restart `pnpm dev`
             and refresh the page.
           </p>
         </section>

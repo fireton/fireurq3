@@ -12,6 +12,6 @@ Planned packages:
 
 ```bash
 cd /Users/fireton/fieurq3/web
-npm install
-npm run dev
+pnpm install
+pnpm dev
 ```
